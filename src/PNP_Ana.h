@@ -13,12 +13,14 @@
 #include "TTree.h"
 #include "TNtuple.h"
 
+#include "RooFit.h"
+#include "RooDataSet.h"
 #include "RooArgList.h"
 #include "RooArgSet.h"
 #include "RooRealVar.h"
 #include "RooFormulaVar.h"
 #include "RooGenericPdf.h"
-#include "RooDataSet.h"
+#include "RooAddPdf.h"
 
 class PNP_Ana
 {
