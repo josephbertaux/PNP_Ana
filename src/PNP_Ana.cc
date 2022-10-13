@@ -256,6 +256,20 @@ int PNP_Ana::TouchPrompt(TFile*& prompt_file, TTree*& prompt_tree)
 		goto label;
 	}
 
+	if(ntuple_mass_name == "")
+	{
+		output_str << "\tMember 'ntuple_mass_name' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(!prompt_tree->GetBranch(ntuple_mass_name.c_str()))
+	{
+		output_str << "\tCould not get branch:" << std::endl;
+		output_str << "\t" << ntuple_mass_name << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
 
 	label:
 	output_str << std::ends;
@@ -301,6 +315,19 @@ int PNP_Ana::TouchNprmpt(TFile*& nprmpt_file, TTree*& nprmpt_tree)
 		goto label;
 	}
 
+	if(ntuple_mass_name == "")
+	{
+		output_str << "\tMember 'ntuple_mass_name' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(!nprmpt_tree->GetBranch(ntuple_mass_name.c_str()))
+	{
+		output_str << "\tCould not get branch:" << std::endl;
+		output_str << "\t" << ntuple_mass_name << std::endl;
+		return_val = 1;
+		goto label;
+	}
 
 	label:
 	output_str << std::ends;
@@ -315,6 +342,8 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	output_str << "PNP_Ana::DoMassFit():" << std::endl;
 
 	int i = 0;
+	Long64_t n;
+	float m = 0.0;
 	float mu = 0.0;
 	float sigma = 1.0;
 	std::string s = "";
@@ -334,7 +363,9 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 	RooArgList base_params;
 	RooArgList meta_params;
+
 	RooGenericPdf* pdf = nullptr;
+	RooFitResult* result = nullptr;
 
 	return_val = TouchOutput(output_file);
 	if(return_val)goto label;
@@ -352,24 +383,47 @@ int PNP_Ana::DoMassFit(int num_pdf)
 		goto label;
 	}
 
+	mu = 0.0;
+	sigma = 0.0;
+
+	prompt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
+	for(n = 0; n < prompt_tree->GetEntriesFast(); n++)
+	{
+		prompt_tree->GetEntry(n);
+		mu += m;
+		sigma += m*m;
+	}
+	nprmpt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
+	for(n = 0; n < nprmpt_tree->GetEntriesFast(); n++)
+	{
+		nprmpt_tree->GetEntry(n);
+		mu += m;
+		sigma += m*m;
+	}
+
+	mu /= (prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast());
+	sigma /= (prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast());
+
+	sigma = sqrt(sigma - mu * mu);
+
 	base_params.addOwned(*(new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), 0.0, -FLT_MAX, FLT_MAX)));
 	for(i = 0; i < num_pdf; i++)
 	{
 		s = "mu_";
 		s += std::to_string(i);
-		base_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 0.0, -FLT_MAX, FLT_MAX)));
+		base_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), mu, mu - 3.0 * sigma, mu + 3.0 * sigma)));
 
 		s = "sigma_";
 		s += std::to_string(i);
-		base_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), sigma / (1 << i), 0.0, FLT_MAX)));
+		base_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), sigma / (1 << i), 0.0, 3.0 * sigma)));
 	}
 
 	for(i = 0; i < num_pdf; i++)
 	{
 		s = "c_";
 		s += std::to_string(i);
-		if(i)	meta_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 0.0, -FLT_MAX, FLT_MAX)));
-		else	meta_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 1.0, -FLT_MAX, FLT_MAX)));
+		if(i)	meta_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 0.0, -1.0, 1.0)));
+		else	meta_params.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 1.0, -1.0, 1.0)));
 
 		s = "gauss_";
 		s += std::to_string(i);
@@ -421,14 +475,17 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 	pdf = new RooGenericPdf(s.c_str(), s.c_str(), t.c_str(), meta_params);
 
-	data_set = RooDataSet("data_set", "data_set", RooArgSet(base_params[0]));
-	prompt_data_set = RooDataSet("prompt_data_set", "prompt_data_set", prompt_tree, RooArgSet(base_params[0]));
-	nprmpt_data_set = RooDataSet("nprmpt_data_set", "nprmpt_data_set", nprmpt_tree, RooArgSet(base_params[0]));
+	//data_set = RooDataSet("data_set", "data_set", *(RooRealVar*)(&base_params[0]));
+	prompt_data_set = RooDataSet("prompt_data_set", "prompt_data_set", prompt_tree, *(RooRealVar*)(&base_params[0]));
+	//nprmpt_data_set = RooDataSet("nprmpt_data_set", "nprmpt_data_set", *(RooRealVar*)(&base_params[0]), RooFit::Import(*nprmpt_tree));
 
-	data_set.append(prompt_data_set);
-	data_set.append(nprmpt_data_set);
+	//data_set.append(prompt_data_set);
+	//data_set.append(nprmpt_data_set);
 
-	std::cout << data_set.sumEntries() << std::endl;
+	//std::cout << data_set.sumEntries() << std::endl;
+	std::cout << base_params[0].GetName() << std::endl;
+	std::cout << base_params[0].GetTitle() << std::endl;
+	result = pdf->fitTo(prompt_data_set);
 
 	label:
 	output_str << std::ends;

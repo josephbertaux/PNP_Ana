@@ -14,6 +14,7 @@
 #include "TNtuple.h"
 
 #include "RooArgList.h"
+#include "RooArgSet.h"
 #include "RooRealVar.h"
 #include "RooFormulaVar.h"
 #include "RooGenericPdf.h"
