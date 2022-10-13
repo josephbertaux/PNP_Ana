@@ -404,8 +404,9 @@ int PNP_Ana::DoMassFit(int num_pdf)
 		sigma += m*m;
 	}
 
-	mu /= (prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast());
-	sigma /= (prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast());
+	n = prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast();
+	mu /= n;
+	sigma /= n;
 
 	sigma = sqrt(sigma - mu * mu);
 
@@ -419,7 +420,7 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 		s = "c_";
 		s += std::to_string(i);
-		coefs.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 1.0 / num_pdf, -1.0, 1.0)));
+		coefs.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), n / num_pdf, 0.0, n)));
 
 		s = "gauss_";
 		s += std::to_string(i);
