@@ -20,6 +20,8 @@
 #include "RooRealVar.h"
 #include "RooFormulaVar.h"
 #include "RooGenericPdf.h"
+#include "RooGaussian.h"
+#include "RooChebychev.h"
 #include "RooAddPdf.h"
 
 class PNP_Ana
@@ -36,6 +38,9 @@ protected:
 	std::string nprmpt_ntpl_name = "";
 
 	std::string ntuple_mass_name = "";
+
+	std::vector<std::string> cut_vars;
+	std::vector<std::string> cut_exprs;
 public:
 	PNP_Ana();
 	~PNP_Ana();
@@ -51,6 +56,9 @@ public:
 	int SetNprmptNtplName(std::string);
 
 	int SetNtupleMassName(std::string);
+
+	int AddCutVar(std::string);
+	int AddCutExpr(std::string);
 	//...
 	int TouchOutput(TFile*&);
 	int TouchPrompt(TFile*&, TTree*&);

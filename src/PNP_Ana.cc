@@ -182,6 +182,74 @@ int PNP_Ana::SetNtupleMassName(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::AddCutVar(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::AddCutVar(std::string s):" << std::endl;
+
+	uint u;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	for(u = 0; u < cut_vars.size(); u++)
+	{
+		if(cut_vars[u] == s)
+		{
+			output_str << "\tPassed argument '" << s << "' has already been added" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+
+	cut_vars.push_back(s);
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::AddCutExpr(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::AddCutExpr(std::string s):" << std::endl;
+
+	uint u;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	for(u = 0; u < cut_exprs.size(); u++)
+	{
+		if(cut_exprs[u] == s)
+		{
+			output_str << "\tPassed argument '" << s << "' has already been added" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+
+	cut_exprs.push_back(s);
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+//member access functions
+
 int PNP_Ana::TouchOutput(TFile*& output_file)
 {
 	int return_val = 0;
@@ -345,11 +413,8 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	Long64_t n;
 	float m = 0.0;
 	float mu = 0.0;
-	float sigma = 1.0;
-
-	char buff[128];
+	float sigma = 0.0;
 	std::string s = "";
-	std::string t = "";
 
 	TFile* output_file = nullptr;
 	TFile* prompt_file = nullptr;
@@ -362,8 +427,8 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	std::vector<RooRealVar*> sgmas = {};
 	RooArgList coefs;
 	RooArgList gsses;
-	//RooArgList cut_args;
-	RooAddPdf* pdf = nullptr;
+	RooArgList cvars;
+	RooAddPdf* sgnl = nullptr;
 
 	RooDataSet* data_set = nullptr;
 	RooDataSet* prompt_data_set = nullptr;
@@ -405,6 +470,12 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	}
 
 	n = prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast();
+	if(n == 0)
+	{
+		output_str << "\tNo entries found in either prompt or nprmpt tree" << std::endl;
+		return_val = 1;
+		goto label;
+	}
 	mu /= n;
 	sigma /= n;
 
@@ -424,25 +495,47 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 		s = "gauss_";
 		s += std::to_string(i);
-		sprintf(buff, "0.3989422804*exp(-0.5*pow((%s-mu)/sigma_%d,2))/sigma_%d", ntuple_mass_name.c_str(), i, i);
-		t = buff;
-		gsses.addOwned(*(new RooGenericPdf(s.c_str(), s.c_str(), t.c_str(), RooArgSet(*mass, *mean, *sgmas.back()))));
+		gsses.addOwned(*(new RooGaussian(s.c_str(), s.c_str(), *mass, *mean, *sgmas.back())));
+	}
+	s = "sgnl";
+	sgnl = new RooAddPdf(s.c_str(), s.c_str(), gsses, coefs);
+
+	cvars.addOwned(*mass);
+	for(i = 0; i < cut_vars.size(); i++)
+	{
+		cvars.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
 	}
 
-	s = "sum_";
-	s += std::to_string(num_pdf);
-	s += "_gauss";
+	s = "";
+	i = 0;
+	while(cut_exprs.size() > 0)
+	{
+		s += "(";
+		s += cut_exprs[i];
+		s += ")";
 
-	pdf = new RooAddPdf(s.c_str(), s.c_str(), gsses, coefs);
+		i++;
+		if(i >= cut_exprs.size())break;
 
-	data_set = new RooDataSet("data_set", "data_set", RooArgSet(*mass));
-	prompt_data_set = new RooDataSet("prompt_data_set", "prompt_data_set", RooArgSet(*mass), RooFit::Import(*prompt_tree));
-	nprmpt_data_set = new RooDataSet("nprmpt_data_set", "nprmpt_data_set", RooArgSet(*mass), RooFit::Import(*nprmpt_tree));
+		s += "&&";
+	}
+
+	data_set = new RooDataSet("data_set", "data_set", cvars);
+	
+	if(s != "")
+	{
+		prompt_data_set = new RooDataSet("prompt_data_set", "prompt_data_set", cvars, RooFit::Import(*prompt_tree), RooFit::Cut(s.c_str()));
+		nprmpt_data_set = new RooDataSet("nprmpt_data_set", "nprmpt_data_set", cvars, RooFit::Import(*nprmpt_tree), RooFit::Cut(s.c_str()));
+	}
+	else
+	{
+		prompt_data_set = new RooDataSet("prompt_data_set", "prompt_data_set", cvars, RooFit::Import(*prompt_tree));
+		nprmpt_data_set = new RooDataSet("nprmpt_data_set", "nprmpt_data_set", cvars, RooFit::Import(*nprmpt_tree));
+	}
 	data_set->append(*prompt_data_set);
 	data_set->append(*nprmpt_data_set);
 
-	std::cout << data_set->sumEntries() << std::endl;
-	result = pdf->fitTo(*data_set);
+	result = sgnl->fitTo(*data_set);
 
 	label:
 	output_str << std::ends;
@@ -450,13 +543,12 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	if(output_file)
 	{
 		output_file->cd();
-		if(pdf)pdf->Write();		
+		if(sgnl)sgnl->Write();		
 		output_file->Write();
 		output_file->Close();
 	}
-	if(mass)delete mass;
 	if(mean)delete mean;
-	for(i = 0; i < sgmas.size(); i++)if(sgmas[i])delete sgmas[i];
+	for(i = 0; i < sgmas.size(); i++)if(sgmas[i])delete sgmas [i];
 	if(data_set)delete data_set;
 	if(prompt_data_set)delete prompt_data_set;
 	if(nprmpt_data_set)delete nprmpt_data_set;
