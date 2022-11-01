@@ -7,9 +7,9 @@ int main(int argc, char* argv[])
 
 	pnp.SetOutputFileName("output.root");
 
-	pnp.SetPromptFileName("prompt.root");
+	pnp.SetPromptFileName("debug/prompt.root");
 	pnp.SetPromptNtplName("prompt");
-	pnp.SetNprmptFileName("nprmpt.root");
+	pnp.SetNprmptFileName("debug/nprmpt.root");
 	pnp.SetNprmptNtplName("nprmpt");
 
 	pnp.SetNtupleMassName("mass");

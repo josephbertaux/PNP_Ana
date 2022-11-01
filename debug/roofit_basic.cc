@@ -29,8 +29,14 @@ void roofit_basic()
 
 	RooDataSet* data = gss.generate(mass, 1000);
 	RooDataSet foo;
+	RooDataSet* bar;
 	foo = RooDataSet("foo", "foo", RooArgSet(mass), RooFit::Import(*tree));
+	bar = new RooDataSet("bar", "bar", RooArgSet(mass), RooFit::Import(*tree));
 
-	//gss.fitTo(*data);
-	gss.fitTo(foo);
+	//gss.fitTo(*data); //test case
+
+//	gss.fitTo(foo); //doesn't work, mass is treated like a parameter
+	gss.fitTo(*bar); //works
+
+	//fitTo seems weird, needs a dereferenced pointer to work
 }
