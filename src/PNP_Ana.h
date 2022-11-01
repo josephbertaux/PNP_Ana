@@ -15,6 +15,7 @@
 
 #include "RooFit.h"
 #include "RooDataSet.h"
+#include "RooFitResult.h"
 #include "RooArgList.h"
 #include "RooArgSet.h"
 #include "RooRealVar.h"

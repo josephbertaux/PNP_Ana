@@ -1,0 +1,20 @@
+line 1:
+	SetUserName jbertau
+line 2:
+	SetExecName /home/jbertau/Data/Repositories/TFileParser/tf_parse
+line 3:
+	SetOutputDir /scratch/halstead/j/jbertau/BD0_Ana_Fall_2022/nprmpt
+line 4:
+	SetMaxJobs 2000
+line 5:
+	SetSubTimer 300
+line 6:
+	AddCommandLineArg v /home/jbertau/Data/BD0_Ana_Fall_2022/nprmpt_tfp_config.txt
+line 7:
+	AddCommandLineArg d target
+line 8:
+	AddCommandLineArg f /home/jbertau/Data/BD0_Ana_Fall_2022/nprmpt.list 200
+Submitted batch job 12149137
+Tue Oct 18 10:49:19 2022
+Submitted batch of 1 jobs (1 total)
+Done

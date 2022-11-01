@@ -543,7 +543,8 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	if(output_file)
 	{
 		output_file->cd();
-		if(sgnl)sgnl->Write();		
+		if(sgnl)sgnl->Write();
+		if(result)result->Write();
 		output_file->Write();
 		output_file->Close();
 	}

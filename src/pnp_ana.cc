@@ -14,8 +14,8 @@ int main(int argc, char* argv[])
 
 	pnp.SetNtupleMassName("mass");
 
-	pnp.AddCutVar("b");
-	pnp.AddCutExpr("b>3");
+//	pnp.AddCutVar("b");
+//	pnp.AddCutExpr("b>3");
 
 	pnp.DoMassFit(2);
 

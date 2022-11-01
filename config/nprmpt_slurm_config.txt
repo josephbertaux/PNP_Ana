@@ -1,0 +1,8 @@
+SetUserName{jbertau}
+SetExecName{/home/jbertau/Data/Repositories/TFileParser/tf_parse}
+SetOutputDir{/scratch/halstead/j/jbertau/BD0_Ana_Fall_2022/nprmpt}
+SetMaxJobs{2000}
+SetSubTimer{300}
+AddCommandLineArg{v; /home/jbertau/Data/BD0_Ana_Fall_2022/nprmpt_tfp_config.txt}
+AddCommandLineArg{d; target}
+AddCommandLineArg{f; /home/jbertau/Data/BD0_Ana_Fall_2022/nprmpt.list; 200}
