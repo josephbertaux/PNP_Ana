@@ -269,6 +269,29 @@ int PNP_Ana::AddCutExpr(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::SetNumGauss(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetNumGauss(std::string s):" << std::endl;
+
+	try
+	{
+		num_gauss = std::stoi(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 //member access functions
 
 int PNP_Ana::TouchOutput(TFile*& output_file)
@@ -307,113 +330,40 @@ int PNP_Ana::TouchOutput(TFile*& output_file)
 	return return_val;
 }
 
-int PNP_Ana::TouchPrompt(TFile*& prompt_file, TTree*& prompt_tree)
+int PNP_Ana::TouchSource(std::string file_name, std::string tree_name, TFile*& file, TTree*& tree)
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Ana::TouchPrompt(TFile* prompt_file, TTree* prompt_tree):" << std::endl;
-	prompt_file = nullptr;
-	prompt_tree = nullptr;
+	output_str << "PNP_Ana::TouchSource(std::string file_name, std::string tree_name, TFile*& file, TTree*& tree):" << std::endl;
+	file = nullptr;
+	tree = nullptr;
 
-	if(prompt_file_name == "")
+	if(file_name == "")
 	{
-		output_str << "\tMember 'prompt_file_name' is empty string" << std::endl;
+		output_str << "\tArgument 'file_name' is empty string" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	prompt_file = TFile::Open(prompt_file_name.c_str(), "READ");
-	if(!prompt_file)
+	file = TFile::Open(file_name.c_str(), "READ");
+	if(!file)
 	{
 		output_str << "\tCould not get file:" << std::endl;
-		output_str << "\t" << prompt_file_name << std::endl;
+		output_str << "\t" << file_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
 
-	if(prompt_ntpl_name == "")
+	if(tree_name == "")
 	{
-		output_str << "\tMember 'prompt_ntpl_name' is empty string" << std::endl;
+		output_str << "\tArgument 'tree_name' is empty string" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	prompt_tree = (TTree*)prompt_file->Get(prompt_ntpl_name.c_str());
-	if(!prompt_tree)
+	tree = (TTree*)file->Get(tree_name.c_str());
+	if(!tree)
 	{
 		output_str << "\tCould not get tree:" << std::endl;
-		output_str << "\t" << prompt_ntpl_name << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	if(ntuple_mass_name == "")
-	{
-		output_str << "\tMember 'ntuple_mass_name' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	if(!prompt_tree->GetBranch(ntuple_mass_name.c_str()))
-	{
-		output_str << "\tCould not get branch:" << std::endl;
-		output_str << "\t" << ntuple_mass_name << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::TouchNprmpt(TFile*& nprmpt_file, TTree*& nprmpt_tree)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::TouchNprmpt(TFile* nprmpt_file, TTree* nprmpt_tree):" << std::endl;
-	nprmpt_file = nullptr;
-	nprmpt_tree = nullptr;
-
-	if(nprmpt_file_name == "")
-	{
-		output_str << "\tMember 'nprmpt_file_name' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	nprmpt_file = TFile::Open(nprmpt_file_name.c_str(), "READ");
-	if(!nprmpt_file)
-	{
-		output_str << "\tCould not get file:" << std::endl;
-		output_str << "\t" << nprmpt_file_name << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	if(nprmpt_ntpl_name == "")
-	{
-		output_str << "\tMember 'nprmpt_ntpl_name' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	nprmpt_tree = (TTree*)nprmpt_file->Get(nprmpt_ntpl_name.c_str());
-	if(!nprmpt_tree)
-	{
-		output_str << "\tCould not get tree:" << std::endl;
-		output_str << "\t" << nprmpt_ntpl_name << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	if(ntuple_mass_name == "")
-	{
-		output_str << "\tMember 'ntuple_mass_name' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	if(!nprmpt_tree->GetBranch(ntuple_mass_name.c_str()))
-	{
-		output_str << "\tCould not get branch:" << std::endl;
-		output_str << "\t" << ntuple_mass_name << std::endl;
+		output_str << "\t" << tree_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -424,7 +374,7 @@ int PNP_Ana::TouchNprmpt(TFile*& nprmpt_file, TTree*& nprmpt_tree)
 	return return_val;
 }
 
-int PNP_Ana::DoMassFit(int num_pdf)
+int PNP_Ana::DoMassFit()
 {
 	int return_val = 0;
 	std::stringstream output_str;
@@ -461,10 +411,10 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	return_val = TouchOutput(output_file);
 	if(return_val)goto label;
 
-	return_val = TouchPrompt(prompt_file, prompt_tree);
+	return_val = TouchSource(prompt_file_name, prompt_ntpl_name, prompt_file, prompt_tree);
 	if(return_val)goto label;
 
-	return_val = TouchNprmpt(nprmpt_file, nprmpt_tree);
+	return_val = TouchSource(nprmpt_file_name, nprmpt_ntpl_name, nprmpt_file, nprmpt_tree);
 	if(return_val)goto label;
 
 	if(ntuple_mass_name == "")
@@ -506,7 +456,7 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), -FLT_MAX, FLT_MAX);
 	mean = new RooRealVar("mu", "mu", mu, mu - 3.0 * sigma, mu + 3.0 * sigma);
-	for(i = 0; i < num_pdf; i++)
+	for(i = 0; i < num_gauss; i++)
 	{
 		s = "sigma_";
 		s += std::to_string(i);
@@ -514,7 +464,7 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 		s = "c_";
 		s += std::to_string(i);
-		coefs.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), n / num_pdf, 0.0, n)));
+		coefs.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), n / num_gauss, 0.0, n)));
 
 		s = "gauss_";
 		s += std::to_string(i);
@@ -571,7 +521,7 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	if(mass_fit_file.is_open())
 	{
 		mass_fit_file << "mu:\t" << mean->getValV() << std::endl;
-		for(i = 0; i < num_pdf; i++)
+		for(i = 0; i < num_gauss; i++)
 		{
 			mass_fit_file << sgmas[i]->GetName() << ":\t" << sgmas[i]->getValV() << "\t" << static_cast<RooRealVar*>(&coefs[i])->GetName() << ":\t" << static_cast<RooRealVar*>(&(coefs[i]))->getValV() << std::endl;
 		}
@@ -598,7 +548,7 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	return return_val;
 }
 
-int PNP_Ana::DoBackgroundFit(int num_pdf)
+int PNP_Ana::DoBackgroundFit()
 {
 	int return_val = 0;
 	std::stringstream output_str;

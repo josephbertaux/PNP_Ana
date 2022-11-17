@@ -30,6 +30,9 @@ class PNP_Ana
 protected:
 	std::string output_file_name = "";
 
+	int num_gauss;
+	int deg_cheby;
+
 	std::string mass_fit_file_name = "";
 
 	std::string prompt_file_name = "";
@@ -48,6 +51,9 @@ public:
 	PNP_Ana();
 	~PNP_Ana();
 
+	int SetNumGauss(std::string);
+	//int SetDegCheby(std::string);
+
 	int SetOutputFileName(std::string);
 	int SetMassFitFileName(std::string);
 
@@ -65,11 +71,10 @@ public:
 	int AddCutExpr(std::string);
 	//...
 	int TouchOutput(TFile*&);
-	int TouchPrompt(TFile*&, TTree*&);
-	int TouchNprmpt(TFile*&, TTree*&);
+	int TouchSource(std::string, std::string, TFile*&, TTree*&);
 
-	int DoMassFit(int);
-	int DoBackgroundFit(int);
+	int DoMassFit();
+	int DoBackgroundFit();
 };
 
 #endif

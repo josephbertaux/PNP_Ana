@@ -18,8 +18,10 @@ int main(int argc, char* argv[])
 //	pnp.AddCutVar("b");
 //	pnp.AddCutExpr("b>3");
 
-	pnp.DoMassFit(2);
-	pnp.DoBackgroundFit(2);
+	pnp.SetNumGauss("2");
+
+	pnp.DoMassFit();
+	pnp.DoBackgroundFit();
 
 	return 0;
 }
