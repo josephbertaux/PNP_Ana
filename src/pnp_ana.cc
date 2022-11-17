@@ -6,6 +6,7 @@ int main(int argc, char* argv[])
 	PNP_Ana pnp;
 
 	pnp.SetOutputFileName("output.root");
+	pnp.SetMassFitFileName("mass_fit.txt");
 
 	pnp.SetPromptFileName("debug/prompt.root");
 	pnp.SetPromptNtplName("prompt");
@@ -18,6 +19,7 @@ int main(int argc, char* argv[])
 //	pnp.AddCutExpr("b>3");
 
 	pnp.DoMassFit(2);
+	pnp.DoBackgroundFit(2);
 
 	return 0;
 }

@@ -35,6 +35,27 @@ int PNP_Ana::SetOutputFileName(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::SetMassFitFileName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetMassFitFileName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	mass_fit_file_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 int PNP_Ana::SetPromptFileName(std::string s)
 {
 	int return_val = 0;
@@ -435,6 +456,8 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	RooDataSet* nprmpt_data_set = nullptr;
 	RooFitResult* result = nullptr;
 
+	std::ofstream mass_fit_file;
+
 	return_val = TouchOutput(output_file);
 	if(return_val)goto label;
 
@@ -537,6 +560,24 @@ int PNP_Ana::DoMassFit(int num_pdf)
 
 	result = sgnl->fitTo(*data_set);
 
+	if(mass_fit_file_name == "")
+	{
+		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMass fit results will not be written to file" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	mass_fit_file.open(mass_fit_file_name, std::ios_base::out | std::ios_base::trunc);
+	if(mass_fit_file.is_open())
+	{
+		mass_fit_file << "mu:\t" << mean->getValV() << std::endl;
+		for(i = 0; i < num_pdf; i++)
+		{
+			mass_fit_file << sgmas[i]->GetName() << ":\t" << sgmas[i]->getValV() << "\t" << static_cast<RooRealVar*>(&coefs[i])->GetName() << ":\t" << static_cast<RooRealVar*>(&(coefs[i]))->getValV() << std::endl;
+		}
+	}
+	mass_fit_file.close();
+
 	label:
 	output_str << std::ends;
 	if(return_val)std::cout << output_str.str();
@@ -553,6 +594,32 @@ int PNP_Ana::DoMassFit(int num_pdf)
 	if(data_set)delete data_set;
 	if(prompt_data_set)delete prompt_data_set;
 	if(nprmpt_data_set)delete nprmpt_data_set;
+
+	return return_val;
+}
+
+int PNP_Ana::DoBackgroundFit(int num_pdf)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::DoBackgroundFit():" << std::endl;
+
+	int i = 0;
+	Long64_t n;
+
+	RooAddPdf* sgnl = nullptr;
+	RooFitResult* result = nullptr;
+
+	TFile* output_file = nullptr;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	if(output_file)
+	{
+		output_file->cd();
+		output_file->Close();
+	}
 
 	return return_val;
 }

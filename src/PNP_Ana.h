@@ -30,6 +30,8 @@ class PNP_Ana
 protected:
 	std::string output_file_name = "";
 
+	std::string mass_fit_file_name = "";
+
 	std::string prompt_file_name = "";
 	std::string prompt_list_name = "";
 	std::string prompt_ntpl_name = "";
@@ -47,6 +49,7 @@ public:
 	~PNP_Ana();
 
 	int SetOutputFileName(std::string);
+	int SetMassFitFileName(std::string);
 
 	int SetPromptFileName(std::string);
 	int SetPromptListName(std::string);
@@ -66,6 +69,7 @@ public:
 	int TouchNprmpt(TFile*&, TTree*&);
 
 	int DoMassFit(int);
+	int DoBackgroundFit(int);
 };
 
 #endif
