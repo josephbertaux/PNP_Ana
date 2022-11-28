@@ -3,18 +3,110 @@ line 1:
 line 2:
 	SetExecName /home/jbertau/Data/Repositories/TFileParser/tf_parse
 line 3:
-	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/nprmpt
+	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd
 line 4:
 	SetMaxJobs 2000
 line 5:
 	SetSubTimer 300
 line 6:
-	AddCommandLineArg v /home/jbertau/Data/Repositories/PNP_Ana/config/nprmpt_tfp_config.txt
+	AddCommandLineArg v /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd_tfp_config.txt
 line 7:
 	AddCommandLineArg d target
 line 8:
-	AddCommandLineArg f /home/jbertau/Data/Repositories/PNP_Ana/config/nprmpt.list 200
-Submitted batch job 17579410
-Mon Nov 28 17:24:10 2022
-Submitted batch of 1 jobs (1 total)
+	AddCommandLineArg f /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd.list 200
+Submitted batch job 17579421
+Submitted batch job 17579422
+Submitted batch job 17579423
+Submitted batch job 17579424
+Submitted batch job 17579425
+Submitted batch job 17579426
+Submitted batch job 17579427
+Submitted batch job 17579428
+Submitted batch job 17579429
+Submitted batch job 17579430
+Submitted batch job 17579431
+Submitted batch job 17579432
+Submitted batch job 17579433
+Submitted batch job 17579434
+Submitted batch job 17579435
+Submitted batch job 17579436
+Submitted batch job 17579437
+Submitted batch job 17579438
+Submitted batch job 17579439
+Submitted batch job 17579440
+Submitted batch job 17579441
+Submitted batch job 17579442
+Submitted batch job 17579443
+Submitted batch job 17579444
+Submitted batch job 17579445
+Submitted batch job 17579446
+Submitted batch job 17579447
+Submitted batch job 17579448
+Submitted batch job 17579449
+Submitted batch job 17579450
+Submitted batch job 17579451
+Submitted batch job 17579452
+Submitted batch job 17579453
+Submitted batch job 17579454
+Submitted batch job 17579455
+Submitted batch job 17579456
+Submitted batch job 17579457
+Submitted batch job 17579458
+Submitted batch job 17579459
+Submitted batch job 17579460
+Submitted batch job 17579461
+Submitted batch job 17579462
+Submitted batch job 17579463
+Submitted batch job 17579464
+Submitted batch job 17579465
+Submitted batch job 17579466
+Submitted batch job 17579467
+Submitted batch job 17579468
+Submitted batch job 17579469
+Submitted batch job 17579470
+Submitted batch job 17579471
+Submitted batch job 17579472
+Submitted batch job 17579473
+Submitted batch job 17579474
+Submitted batch job 17579475
+Submitted batch job 17579476
+Submitted batch job 17579477
+Submitted batch job 17579478
+Submitted batch job 17579479
+Submitted batch job 17579480
+Submitted batch job 17579481
+Submitted batch job 17579482
+Submitted batch job 17579483
+Submitted batch job 17579484
+Submitted batch job 17579485
+Submitted batch job 17579486
+Submitted batch job 17579487
+Submitted batch job 17579488
+Submitted batch job 17579489
+Submitted batch job 17579490
+Submitted batch job 17579491
+Submitted batch job 17579492
+Submitted batch job 17579493
+Submitted batch job 17579494
+Submitted batch job 17579495
+Submitted batch job 17579496
+Submitted batch job 17579497
+Submitted batch job 17579498
+Submitted batch job 17579499
+Submitted batch job 17579500
+Submitted batch job 17579501
+Submitted batch job 17579502
+Submitted batch job 17579503
+Submitted batch job 17579504
+Submitted batch job 17579505
+Submitted batch job 17579506
+Submitted batch job 17579507
+Submitted batch job 17579508
+Submitted batch job 17579509
+Submitted batch job 17579510
+Submitted batch job 17579511
+Submitted batch job 17579512
+Submitted batch job 17579513
+Mon Nov 28 17:36:27 2022
+Submitted batch of 93 jobs (93 total)
 Done

@@ -1,0 +1,37 @@
+SetTargetNtpl{bkgrnd_ntpl}
+
+AddSourceTree{Dfinder/ntDkpi}
+
+AddSizeVar{Dsize}
+
+AddTargetVar{mass}
+AddTargetVar{pT}
+AddTargetVar{cent; centrality/2}
+
+AddSourceVar{mass; f[Dsize]}
+AddSourceVar{pT; f[Dsize]}
+AddSourceVar{centrality; i}
+
+AddTargetVar{y}
+AddTargetVar{vert_prob; VtxProb}
+AddTargetVar{log_DLS; log10(3DDecayLengthSignificance)}
+AddTargetVar{log_DL; log10(3DDecayLength)}
+AddTargetVar{pointing_angle; 3DPointingAngle}
+AddTargetVar{trk_1_pt; Dtrk1Pt}
+AddTargetVar{trk_2_pt; Dtrk2Pt}
+AddTargetVar{xy_dca_sig_1; xyDCASignificanceDaugther1}
+AddTargetVar{xy_dca_sig_2; xyDCASignificanceDaugther2}
+AddTargetVar{z_dca_sig_1; zDCASignificanceDaugther1}
+AddTargetVar{z_dca_sig_2; zDCASignificanceDaugther2}
+
+AddSourceVar{y; f[Dsize]}
+AddSourceVar{VtxProb; f[Dsize]}
+AddSourceVar{3DDecayLengthSignificance; f[Dsize]}
+AddSourceVar{3DDecayLength; f[Dsize]}
+AddSourceVar{3DPointingAngle; f[Dsize]}
+AddSourceVar{Dtrk1Pt; f[Dsize]}
+AddSourceVar{Dtrk2Pt; f[Dsize]}
+AddSourceVar{xyDCASignificanceDaugther1; f[Dsize]}
+AddSourceVar{xyDCASignificanceDaugther2; f[Dsize]}
+AddSourceVar{zDCASignificanceDaugther1; f[Dsize]}
+AddSourceVar{zDCASignificanceDaugther2; f[Dsize]}

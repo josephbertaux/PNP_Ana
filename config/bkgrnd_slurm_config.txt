@@ -1,0 +1,8 @@
+SetUserName{jbertau}
+SetExecName{/home/jbertau/Data/Repositories/TFileParser/tf_parse}
+SetOutputDir{/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd}
+SetMaxJobs{2000}
+SetSubTimer{300}
+AddCommandLineArg{v; /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd_tfp_config.txt}
+AddCommandLineArg{d; target}
+AddCommandLineArg{f; /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd.list; 200}

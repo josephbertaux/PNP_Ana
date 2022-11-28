@@ -1,1 +1,1 @@
-find /scratch/brown/mstojano/d0outputs/dataoutputMiniAODwBDT -type f > bkgrnd.list
+find /scratch/brown/mstojano/d0outputs/dataoutputMiniAOD -type f > bkgrnd.list
