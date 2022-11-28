@@ -14,7 +14,7 @@ line 7:
 	AddCommandLineArg d target
 line 8:
 	AddCommandLineArg f /home/jbertau/Data/Repositories/PNP_Ana/config/nprmpt.list 200
-Submitted batch job 17536796
-Thu Nov 17 10:07:22 2022
+Submitted batch job 17579410
+Mon Nov 28 17:24:10 2022
 Submitted batch of 1 jobs (1 total)
 Done
