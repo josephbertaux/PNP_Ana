@@ -77,27 +77,6 @@ int PNP_Ana::SetPromptFileName(std::string s)
 	return return_val;
 }
 
-int PNP_Ana::SetPromptListName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetPromptListName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	prompt_list_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
 int PNP_Ana::SetPromptNtplName(std::string s)
 {
 	int return_val = 0;
@@ -140,27 +119,6 @@ int PNP_Ana::SetNprmptFileName(std::string s)
 	return return_val;
 }
 
-int PNP_Ana::SetNprmptListName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNprmptListName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	nprmpt_list_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
 int PNP_Ana::SetNprmptNtplName(std::string s)
 {
 	int return_val = 0;
@@ -175,6 +133,48 @@ int PNP_Ana::SetNprmptNtplName(std::string s)
 	}
 
 	nprmpt_ntpl_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetBkgrndFileName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetBkgrndFileName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	bkgrnd_file_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetBkgrndNtplName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetBkgrndNtplName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	bkgrnd_ntpl_name = s;
 
 	label:
 	output_str << std::ends;
@@ -269,6 +269,62 @@ int PNP_Ana::AddCutExpr(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::AddTrainingVar(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::AddTrainingVar(std::string s):" << std::endl;
+
+	uint u;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	for(u = 0; u < training_vars.size(); u++)
+	{
+		if(training_vars[u] == s)
+		{
+			output_str << "\tPassed argument '" << s << "' has already been added" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+
+	training_vars.push_back(s);
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetNumSigma(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetNumSigma(std::string s):" << std::endl;
+
+	try
+	{
+		num_sigma = std::stoi(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 int PNP_Ana::SetNumGauss(std::string s)
 {
 	int return_val = 0;
@@ -292,34 +348,57 @@ int PNP_Ana::SetNumGauss(std::string s)
 	return return_val;
 }
 
-//member access functions
-
-int PNP_Ana::TouchOutput(TFile*& output_file)
+int PNP_Ana::SetDegCheby(std::string s)
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Ana::TouchOutput(TFile* output_file):" << std::endl;
-	output_file = nullptr;
+	output_str << "PNP_Ana::SetDegCheby(std::string s):" << std::endl;
 
-	if(output_file_name == "")
+	try
 	{
-		output_str << "\tMember 'output_file_name' is empty string" << std::endl;
+		deg_cheby = std::stoi(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	output_file = TFile::Open(output_file_name.c_str(), "UPDATE");
-	if(!output_file)
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+//member access functions
+
+int PNP_Ana::TouchOutput(std::string file_name, TFile*& file)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::TouchOutput(std::string file_name, TFile*& file):" << std::endl;
+	file = nullptr;
+
+	if(file_name == "")
+	{
+		output_str << "\tArgument 'file_name' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	//file = TFile::Open(file_name.c_str(), "UPDATE");
+	file = TFile::Open(file_name.c_str(), "RECREATE");
+	if(!file)
 	{
 		output_str << "\tCould not get file:" << std::endl;
-		output_str << "\t" << output_file_name << std::endl;
+		output_str << "\t" << file_name << std::endl;
 		output_str << "\tRecreating..." << std::endl;
 
-		output_file = TFile::Open(output_file_name.c_str(), "RECREATE");
+		file = TFile::Open(file_name.c_str(), "RECREATE");
 	}
-	if(!output_file)
+	if(!file)
 	{
 		output_str << "\tFailed to recreate file:" << std::endl;
-		output_str << "\t" << output_file_name << std::endl;
+		output_str << "\t" << file_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -408,7 +487,7 @@ int PNP_Ana::DoMassFit()
 
 	std::ofstream mass_fit_file;
 
-	return_val = TouchOutput(output_file);
+	return_val = TouchOutput("foo.root", output_file);
 	if(return_val)goto label;
 
 	return_val = TouchSource(prompt_file_name, prompt_ntpl_name, prompt_file, prompt_tree);
@@ -432,14 +511,14 @@ int PNP_Ana::DoMassFit()
 	{
 		prompt_tree->GetEntry(n);
 		mu += m;
-		sigma += m*m;
+		sigma += m * m;
 	}
 	nprmpt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
 	for(n = 0; n < nprmpt_tree->GetEntriesFast(); n++)
 	{
 		nprmpt_tree->GetEntry(n);
 		mu += m;
-		sigma += m*m;
+		sigma += m * m;
 	}
 
 	n = prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast();
@@ -455,7 +534,7 @@ int PNP_Ana::DoMassFit()
 	sigma = sqrt(sigma - mu * mu);
 
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), -FLT_MAX, FLT_MAX);
-	mean = new RooRealVar("mu", "mu", mu, mu - 3.0 * sigma, mu + 3.0 * sigma);
+	mean = new RooRealVar("mu", "mu", mu, mu - num_sigma * sigma, mu + num_sigma * sigma);
 	for(i = 0; i < num_gauss; i++)
 	{
 		s = "sigma_";
@@ -544,6 +623,143 @@ int PNP_Ana::DoMassFit()
 	if(data_set)delete data_set;
 	if(prompt_data_set)delete prompt_data_set;
 	if(nprmpt_data_set)delete nprmpt_data_set;
+
+	return return_val;
+}
+
+int PNP_Ana::DoTraining()
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::DoTraining():" << std::endl;
+
+	int i = 0;
+	Long64_t n;
+	float mu = 0.0;
+	float var = 0.0;
+	float norm = 0.0;
+	float sigma = 0.0;
+	float coef = 0.0;
+	std::string s = "";
+
+	TFile* output_file = nullptr;
+
+	TFile* prompt_file = nullptr;
+	TTree* prompt_tree = nullptr;
+	TFile* nprmpt_file = nullptr;
+	TTree* nprmpt_tree = nullptr;
+	TFile* bkgrnd_file = nullptr;
+	TTree* bkgrnd_tree = nullptr;
+
+	TMVA::Factory *factory = nullptr;;
+	TMVA::DataLoader *dataloader = nullptr;
+
+	std::ifstream mass_fit_file;
+
+	return_val = TouchOutput("foo.root", output_file);
+	if(return_val)goto label;
+
+
+	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
+	dataloader = new TMVA::DataLoader("dataloader");
+
+	if(mass_fit_file_name == "")
+	{
+		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMass fit results will not be written to file" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	mass_fit_file.open(mass_fit_file_name, std::ios_base::in);
+	if(!mass_fit_file.is_open())
+	{
+		output_str << "\tCouldn't open file" << std::endl;
+		output_str << "\t" << mass_fit_file_name << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	std::getline(mass_fit_file, s);
+	sscanf(s.c_str(), "%*s %f", &mu);
+
+	for(s; std::getline(mass_fit_file, s);)
+	{
+		sscanf(s.c_str(), "%*s %f %*s %f", &sigma, &coef);
+
+		norm += coef;
+		var += coef * sigma * sigma;
+	}
+	var /= norm;
+	sigma = sqrt(var);
+
+	mass_fit_file.close();
+
+	std::cout << mu << "\t" << sigma << std::endl;
+
+	return_val = TouchSource(prompt_file_name, prompt_ntpl_name, prompt_file, prompt_tree);
+	if(return_val)goto label;
+
+	return_val = TouchSource(nprmpt_file_name, nprmpt_ntpl_name, nprmpt_file, nprmpt_tree);
+	if(return_val)goto label;
+
+	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
+	if(return_val)goto label;
+
+	for(i = 0; i < training_vars.size(); ++i)
+	{
+		dataloader->AddVariable(training_vars[i].c_str(), 'F');
+	}
+
+	s = "";
+	i = 0;
+	while(cut_exprs.size() > 0)
+	{
+		s += "(";
+		s += cut_exprs[i];
+		s += ")";
+
+		i++;
+		if(i >= cut_exprs.size())break;
+
+		s += "&&";
+	}
+
+	if(s != "")
+	{
+		dataloader->AddCut(TCut(s.c_str(), s.c_str()), "Signal");
+		dataloader->AddCut(TCut(s.c_str(), s.c_str()), "Background");
+	}
+
+	s = "";
+	s += "((" + std::to_string(mu - 2.0 * num_sigma * sigma) + "<" + ntuple_mass_name + ")";
+	s += "&&";
+	s += "(" + ntuple_mass_name + "<" + std::to_string(mu - num_sigma * sigma) + "))";
+	s += "||";
+	s += "((" + std::to_string(mu + num_sigma * sigma) + "<" + ntuple_mass_name + ")";
+	s += "&&";
+	s += "(" + ntuple_mass_name + "<" + std::to_string(mu + 2.0 * num_sigma * sigma) + "))";
+
+	dataloader->AddCut(TCut(s.c_str(), s.c_str()), "Background");
+
+	dataloader->AddSignalTree(prompt_tree);
+	dataloader->AddSignalTree(nprmpt_tree);
+
+	dataloader->AddBackgroundTree(bkgrnd_tree);
+
+	factory->BookMethod(dataloader, TMVA::Types::kBDT, "BDT", "!H:!V:NTrees=400:MinNodeSize=5%:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20");
+
+	factory->TrainAllMethods();
+	factory->TestAllMethods();
+	factory->EvaluateAllMethods();
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	if(output_file)
+	{
+		output_file->Write();
+		output_file->Close();
+	}
 
 	return return_val;
 }

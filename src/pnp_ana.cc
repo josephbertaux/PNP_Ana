@@ -12,16 +12,25 @@ int main(int argc, char* argv[])
 	pnp.SetPromptNtplName("prompt");
 	pnp.SetNprmptFileName("debug/nprmpt.root");
 	pnp.SetNprmptNtplName("nprmpt");
+	pnp.SetBkgrndFileName("debug/bkgrnd.root");
+	pnp.SetBkgrndNtplName("bkgrnd");
 
 	pnp.SetNtupleMassName("mass");
 
-//	pnp.AddCutVar("b");
-//	pnp.AddCutExpr("b>3");
+	pnp.AddCutVar("d");
+	pnp.AddCutExpr("d>7");
 
+	pnp.AddTrainingVar("a");
+	pnp.AddTrainingVar("b");
+	pnp.AddTrainingVar("c");
+	pnp.AddTrainingVar("d");
+
+	pnp.SetNumSigma("3");
 	pnp.SetNumGauss("2");
 
-	pnp.DoMassFit();
-	pnp.DoBackgroundFit();
+	//pnp.DoMassFit();
+	pnp.DoTraining();
+	//pnp.DoBackgroundFit();
 
 	return 0;
 }
