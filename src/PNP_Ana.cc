@@ -203,6 +203,56 @@ int PNP_Ana::SetNtupleMassName(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::SetNtupleMassMin(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetNtupleMassMin(std::string s):" << std::endl;
+
+	try
+	{
+		mass_min = std::stof(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stof falled to cast argument \"" << s << "\" as float" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	mass_min_set = true;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetNtupleMassMax(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetNtupleMassMax(std::string s):" << std::endl;
+
+	try
+	{
+		mass_max = std::stof(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stof falled to cast argument \"" << s << "\" as float" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	mass_max_set = true;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 int PNP_Ana::AddCutVar(std::string s)
 {
 	int return_val = 0;
@@ -370,6 +420,7 @@ int PNP_Ana::SetDegCheby(std::string s)
 	if(return_val)std::cout << output_str.str();
 	return return_val;
 }
+
 //member access functions
 
 int PNP_Ana::TouchOutput(std::string file_name, TFile*& file)
@@ -474,10 +525,12 @@ int PNP_Ana::DoMassFit()
 
 	RooRealVar* mass = nullptr;
 	RooRealVar* mean = nullptr;
-	std::vector<RooRealVar*> sgmas = {};
+
+	RooArgList sgmas;
 	RooArgList coefs;
 	RooArgList gsses;
 	RooArgList cvars;
+
 	RooAddPdf* sgnl = nullptr;
 
 	RooDataSet* data_set = nullptr;
@@ -506,21 +559,6 @@ int PNP_Ana::DoMassFit()
 	mu = 0.0;
 	sigma = 0.0;
 
-	prompt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
-	for(n = 0; n < prompt_tree->GetEntriesFast(); n++)
-	{
-		prompt_tree->GetEntry(n);
-		mu += m;
-		sigma += m * m;
-	}
-	nprmpt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
-	for(n = 0; n < nprmpt_tree->GetEntriesFast(); n++)
-	{
-		nprmpt_tree->GetEntry(n);
-		mu += m;
-		sigma += m * m;
-	}
-
 	n = prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast();
 	if(n == 0)
 	{
@@ -528,26 +566,53 @@ int PNP_Ana::DoMassFit()
 		return_val = 1;
 		goto label;
 	}
-	mu /= n;
-	sigma /= n;
 
-	sigma = sqrt(sigma - mu * mu);
+	prompt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
+	nprmpt_tree->SetBranchAddress(ntuple_mass_name.c_str(), &m);
+
+	for(n = 0; n < prompt_tree->GetEntriesFast(); n++)
+	{
+		prompt_tree->GetEntry(n);
+		mu += m;
+	}
+	for(n = 0; n < nprmpt_tree->GetEntriesFast(); n++)
+	{
+		nprmpt_tree->GetEntry(n);
+		mu += m;
+	}
+	n = prompt_tree->GetEntriesFast() + nprmpt_tree->GetEntriesFast();
+	mu /= n;
+
+	for(n = 0; n < prompt_tree->GetEntriesFast(); n++)
+	{
+		prompt_tree->GetEntry(n);
+		m -= mu;
+		sigma += m * m;
+	}
+	for(n = 0; n < nprmpt_tree->GetEntriesFast(); n++)
+	{
+		nprmpt_tree->GetEntry(n);
+		m -= mu;
+		sigma += m * m;
+	}
+	sigma /= n;
+	sigma = sqrt(sigma);
 
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), -FLT_MAX, FLT_MAX);
 	mean = new RooRealVar("mu", "mu", mu, mu - num_sigma * sigma, mu + num_sigma * sigma);
 	for(i = 0; i < num_gauss; i++)
 	{
-		s = "sigma_";
+		s = "s_";
 		s += std::to_string(i);
-		sgmas.push_back(new RooRealVar(s.c_str(), s.c_str(), sigma / (1 << i), 0.0, 3.0 * sigma));
+		sgmas.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), sigma / (1 << i), 0.0, num_sigma * sigma)));
 
 		s = "c_";
 		s += std::to_string(i);
 		coefs.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), n / num_gauss, 0.0, n)));
 
-		s = "gauss_";
+		s = "g_";
 		s += std::to_string(i);
-		gsses.addOwned(*(new RooGaussian(s.c_str(), s.c_str(), *mass, *mean, *sgmas.back())));
+		gsses.addOwned(*(new RooGaussian(s.c_str(), s.c_str(), *mass, *mean, (RooRealVar&)(sgmas[sgmas.getSize() - 1]))));
 	}
 	s = "sgnl";
 	sgnl = new RooAddPdf(s.c_str(), s.c_str(), gsses, coefs);
@@ -602,7 +667,10 @@ int PNP_Ana::DoMassFit()
 		mass_fit_file << "mu:\t" << mean->getValV() << std::endl;
 		for(i = 0; i < num_gauss; i++)
 		{
-			mass_fit_file << sgmas[i]->GetName() << ":\t" << sgmas[i]->getValV() << "\t" << static_cast<RooRealVar*>(&coefs[i])->GetName() << ":\t" << static_cast<RooRealVar*>(&(coefs[i]))->getValV() << std::endl;
+			mass_fit_file << ((RooRealVar*)&(sgmas[i]))->GetName() << ":\t";
+			mass_fit_file << ((RooRealVar*)&(sgmas[i]))->getValV() << "\t";
+			mass_fit_file << ((RooRealVar*)&(coefs[i]))->GetName() << ":\t";
+			mass_fit_file << ((RooRealVar*)&(coefs[i]))->getValV() << std::endl;
 		}
 	}
 	mass_fit_file.close();
@@ -619,7 +687,6 @@ int PNP_Ana::DoMassFit()
 		output_file->Close();
 	}
 	if(mean)delete mean;
-	for(i = 0; i < sgmas.size(); i++)if(sgmas[i])delete sgmas [i];
 	if(data_set)delete data_set;
 	if(prompt_data_set)delete prompt_data_set;
 	if(nprmpt_data_set)delete nprmpt_data_set;
@@ -681,7 +748,6 @@ int PNP_Ana::DoTraining()
 
 	std::getline(mass_fit_file, s);
 	sscanf(s.c_str(), "%*s %f", &mu);
-
 	for(s; std::getline(mass_fit_file, s);)
 	{
 		sscanf(s.c_str(), "%*s %f %*s %f", &sigma, &coef);
@@ -757,6 +823,7 @@ int PNP_Ana::DoTraining()
 	if(return_val)std::cout << output_str.str();
 	if(output_file)
 	{
+		mass_fit_file.close();
 		output_file->Write();
 		output_file->Close();
 	}
@@ -772,17 +839,173 @@ int PNP_Ana::DoBackgroundFit()
 
 	int i = 0;
 	Long64_t n;
-
-	RooAddPdf* sgnl = nullptr;
-	RooFitResult* result = nullptr;
+	float a = 0.0;
+	float b = 0.0;
+	std::string s = "";
 
 	TFile* output_file = nullptr;
+	TFile* bkgrnd_file = nullptr;
+	TTree* bkgrnd_tree = nullptr;
+
+	RooRealVar* mass = nullptr;
+	RooRealVar* mean = nullptr;
+	RooRealVar* wdth = nullptr;
+	RooRealVar* sgnl_count = nullptr;
+	RooRealVar* bkgd_count = nullptr;
+
+	RooArgList sgmas;
+	RooArgList wdths;
+	RooArgList coefs;
+	RooArgList gsses;
+	RooArgList cvars;
+	RooArgList cheby;
+	RooArgList count;
+	RooArgList sgnl_bkgd;
+
+	RooAddPdf* sgnl = nullptr;
+	RooChebychev* bkgd = nullptr;
+	RooAddPdf* model = nullptr;
+
+	RooDataSet* data_set = nullptr;
+	RooFitResult* result = nullptr;
+
+	std::ifstream mass_fit_file;
+
+	return_val = TouchOutput("foo.root", output_file);
+	if(return_val)goto label;
+
+	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
+	if(return_val)goto label;
+
+	if(ntuple_mass_name == "")
+	{
+		output_str << "\tMember 'ntuple_mass_name' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(!mass_min_set)
+	{
+		output_str << "\tMember \"mass_min\" not set" << std::endl;
+		output_str << "\tCall \"PNP_Ana::SetMassMin(std::string)\"" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(!mass_max_set)
+	{
+		output_str << "\tMember \"mass_max\" not set" << std::endl;
+		output_str << "\tCall \"PNP_Ana::SetMassMax(std::string)\"" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	n = bkgrnd_tree->GetEntriesFast();
+	if(n == 0)
+	{
+		output_str << "\tNo entries found in bkgrnd tree" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	if(mass_fit_file_name == "")
+	{
+		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	mass_fit_file.open(mass_fit_file_name, std::ios_base::in);
+	if(!mass_fit_file.is_open())
+	{
+		output_str << "\tCouldn't open file" << std::endl;
+		output_str << "\t" << mass_fit_file_name << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	std::getline(mass_fit_file, s);
+	sscanf(s.c_str(), "%*s %f", &a);
+	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), mass_min, mass_max);
+	wdth = new RooRealVar("w", "w", 1.0, 1.0 / num_sigma, num_sigma);
+	mean = new RooRealVar("mu", "mu", a, a, a);
+	i = 0;
+	for(s; std::getline(mass_fit_file, s);)
+	{
+		sscanf(s.c_str(), "%*s %f %*s %f", &a, &b);
+
+		s = "s_";
+		s += std::to_string(i);
+		sgmas.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), a, a, a)));
+
+		s = "w_";
+		s += std::to_string(i);
+		wdths.addOwned(*(new RooFormulaVar(s.c_str(), s.c_str(), ("s_" + std::to_string(i) + "*w").c_str(), RooArgList(*wdth, sgmas[sgmas.getSize() - 1]))));
+
+		s = "c_";
+		s += std::to_string(i);
+		coefs.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), b, b, b)));
+
+		s = "g_";
+		s += std::to_string(i);
+		gsses.addOwned(*(new RooGaussian(s.c_str(), s.c_str(), *mass, *mean, (RooFormulaVar&)(wdths[wdths.getSize() - 1]))));
+
+		++i;
+	}
+	s = "sgnl";
+	sgnl = new RooAddPdf(s.c_str(), s.c_str(), gsses, coefs);
+	sgnl_bkgd.addOwned(*sgnl);
+
+	for(i = 1; i < deg_cheby; ++i)
+	{
+		s = "d_";
+		s += std::to_string(i);
+		cheby.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 0.0, -FLT_MAX, FLT_MAX)));
+	}
+	s = "bkgd";
+	bkgd = new RooChebychev(s.c_str(), s.c_str(), *mass, cheby);
+	sgnl_bkgd.addOwned(*bkgd);
+
+	sgnl_count = new RooRealVar("sgnl_count", "sgnl_count", 0.0, n);
+	bkgd_count = new RooRealVar("bkgd_count", "bkgd_count", n, n);
+	count.addOwned(*sgnl_count);
+	count.addOwned(*bkgd_count);
+
+	model = new RooAddPdf("model", "model", sgnl_bkgd, count);
+
+	cvars.addOwned(*mass);
+	for(i = 0; i < cut_vars.size(); i++)
+	{
+		cvars.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
+	}
+
+	s = "";
+	i = 0;
+	while(cut_exprs.size() > 0)
+	{
+		s += "(";
+		s += cut_exprs[i];
+		s += ")";
+
+		i++;
+		if(i >= cut_exprs.size())break;
+
+		s += "&&";
+	}
+
+	if(s != "")
+	{
+		data_set = new RooDataSet("data_set", "data_set", cvars, RooFit::Import(*bkgrnd_tree), RooFit::Cut(s.c_str()));
+	}
+	else
+	{
+		data_set = new RooDataSet("data_set", "data_set", cvars, RooFit::Import(*bkgrnd_tree));
+	}
+
+	result = model->fitTo(*data_set);
 
 	label:
 	output_str << std::ends;
 	if(return_val)std::cout << output_str.str();
 	if(output_file)
 	{
+		mass_fit_file.close();
 		output_file->cd();
 		output_file->Close();
 	}

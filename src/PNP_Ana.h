@@ -49,6 +49,10 @@ protected:
 	std::string bkgrnd_ntpl_name = "";
 
 	std::string ntuple_mass_name = "";
+	float mass_min;
+	bool mass_min_set;
+	float mass_max;
+	bool mass_max_set;
 
 	std::vector<std::string> cut_vars;
 	std::vector<std::string> cut_exprs;
@@ -75,6 +79,8 @@ public:
 	int SetBkgrndNtplName(std::string);
 
 	int SetNtupleMassName(std::string);
+	int SetNtupleMassMin(std::string);
+	int SetNtupleMassMax(std::string);
 
 	int AddCutVar(std::string);
 	int AddCutExpr(std::string);
