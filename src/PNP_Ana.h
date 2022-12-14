@@ -12,8 +12,12 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TNtuple.h"
+#include "TCanvas.h"
+#include "TSystem.h"
+#include "TROOT.h"
 
 #include "RooFit.h"
+#include "RooPlot.h"
 #include "RooDataSet.h"
 #include "RooFitResult.h"
 #include "RooArgList.h"
@@ -25,7 +29,10 @@
 #include "RooChebychev.h"
 #include "RooAddPdf.h"
 
+#include "TMVA/Config.h"
+#include "TMVA/Tools.h"
 #include "TMVA/Factory.h"
+#include "TMVA/Reader.h"
 #include "TMVA/DataLoader.h"
 
 class PNP_Ana
@@ -33,11 +40,17 @@ class PNP_Ana
 protected:
 	std::string output_file_name = "";
 
-	int num_sigma;
-	int num_gauss;
-	int deg_cheby;
+	std::string plot_name = "";
+	std::string plot_file = "";
+	int plot_bins = -1;
+
+	int num_sigma = -1;
+	int num_gauss = -1;
+	int deg_cheby = -1;
 
 	std::string mass_fit_file_name = "";
+	std::string bkgd_fit_file_name = "";
+	std::string training_weight_file_dir = "";
 
 	std::string prompt_file_name = "";
 	std::string prompt_ntpl_name = "";
@@ -48,11 +61,15 @@ protected:
 	std::string bkgrnd_file_name = "";
 	std::string bkgrnd_ntpl_name = "";
 
+	std::string ntuple_bdtv_name = "";
 	std::string ntuple_mass_name = "";
+
+	float bdt_cut = 0.0;
+
 	float mass_min;
-	bool mass_min_set;
 	float mass_max;
-	bool mass_max_set;
+	bool mass_min_set = false;
+	bool mass_max_set = false;
 
 	std::vector<std::string> cut_vars;
 	std::vector<std::string> cut_exprs;
@@ -62,12 +79,18 @@ public:
 	PNP_Ana();
 	~PNP_Ana();
 
+	int SetPlotName(std::string);
+	int SetPlotFile(std::string);
+	int SetPlotBins(std::string);
+
 	int SetNumSigma(std::string);
 	int SetNumGauss(std::string);
 	int SetDegCheby(std::string);
 
 	int SetOutputFileName(std::string);
 	int SetMassFitFileName(std::string);
+	int SetBkgdFitFileName(std::string);
+	int SetTrainingWeightFileDir(std::string);
 
 	int SetPromptFileName(std::string);
 	int SetPromptNtplName(std::string);
@@ -78,9 +101,12 @@ public:
 	int SetBkgrndFileName(std::string);
 	int SetBkgrndNtplName(std::string);
 
+	int SetNtupleBDTVName(std::string);
 	int SetNtupleMassName(std::string);
 	int SetNtupleMassMin(std::string);
 	int SetNtupleMassMax(std::string);
+
+	int SetBDTCut(std::string);
 
 	int AddCutVar(std::string);
 	int AddCutExpr(std::string);
@@ -89,9 +115,11 @@ public:
 
 	int TouchOutput(std::string, TFile*&);
 	int TouchSource(std::string, std::string, TFile*&, TTree*&);
+	int TouchReader(TMVA::Reader*&);
 
 	int DoMassFit();
 	int DoTraining();
+	int DoBackgroundCopy();
 	int DoBackgroundFit();
 };
 

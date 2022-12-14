@@ -1,0 +1,57 @@
+line 1:
+	SetUserName jbertau
+line 2:
+	SetExecName /home/jbertau/Data/Repositories/PNP_Ana/pnp_ana
+line 3:
+	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit
+line 4:
+	SetMaxJobs 2000
+line 5:
+	SetSubTimer 120
+line 7:
+	AddCommandLineArg i 8
+line 8:
+	AddCommandLineArg i 5
+Submitted batch job 17766096
+Submitted batch job 17766097
+Submitted batch job 17766098
+Submitted batch job 17766099
+Submitted batch job 17766100
+Submitted batch job 17766101
+Submitted batch job 17766102
+Submitted batch job 17766103
+Submitted batch job 17766104
+Submitted batch job 17766105
+Submitted batch job 17766106
+Submitted batch job 17766107
+Submitted batch job 17766108
+Submitted batch job 17766109
+Submitted batch job 17766110
+Submitted batch job 17766111
+Submitted batch job 17766112
+Submitted batch job 17766113
+Submitted batch job 17766114
+Submitted batch job 17766115
+Submitted batch job 17766116
+Submitted batch job 17766117
+Submitted batch job 17766118
+Submitted batch job 17766119
+Submitted batch job 17766120
+Submitted batch job 17766121
+Submitted batch job 17766122
+Submitted batch job 17766123
+Submitted batch job 17766124
+Submitted batch job 17766125
+Submitted batch job 17766126
+Submitted batch job 17766127
+Submitted batch job 17766128
+Submitted batch job 17766129
+Submitted batch job 17766130
+Submitted batch job 17766131
+Submitted batch job 17766132
+Submitted batch job 17766133
+Submitted batch job 17766134
+Submitted batch job 17766135
+Tue Dec 13 22:29:58 2022
+Submitted batch of 40 jobs (40 total)
+Done

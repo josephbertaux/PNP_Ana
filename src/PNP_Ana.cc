@@ -56,6 +56,48 @@ int PNP_Ana::SetMassFitFileName(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::SetBkgdFitFileName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetBkgdFitFileName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	bkgd_fit_file_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetTrainingWeightFileDir(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetTrainingWeightFileDir(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	training_weight_file_dir = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 int PNP_Ana::SetPromptFileName(std::string s)
 {
 	int return_val = 0;
@@ -175,6 +217,27 @@ int PNP_Ana::SetBkgrndNtplName(std::string s)
 	}
 
 	bkgrnd_ntpl_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetNtupleBDTVName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetNtupleTMVAName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	ntuple_bdtv_name = s;
 
 	label:
 	output_str << std::ends;
@@ -352,6 +415,94 @@ int PNP_Ana::AddTrainingVar(std::string s)
 	return return_val;
 }
 
+int PNP_Ana::SetPlotName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetPlotName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	plot_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetPlotFile(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetPlotFile(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	plot_file = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetPlotBins(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetPlotBins(std::string s):" << std::endl;
+
+	try
+	{
+		plot_bins = std::stoi(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetBDTCut(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetBDTCut(std::string s):" << std::endl;
+
+	try
+	{
+		bdt_cut = std::stof(s);
+	}
+	catch(const std::invalid_argument&)
+	{
+		output_str << "\tstd::stof falled to cast argument \"" << s << "\" as float" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 int PNP_Ana::SetNumSigma(std::string s)
 {
 	int return_val = 0;
@@ -436,8 +587,7 @@ int PNP_Ana::TouchOutput(std::string file_name, TFile*& file)
 		return_val = 1;
 		goto label;
 	}
-	//file = TFile::Open(file_name.c_str(), "UPDATE");
-	file = TFile::Open(file_name.c_str(), "RECREATE");
+	file = TFile::Open(file_name.c_str(), "UPDATE");
 	if(!file)
 	{
 		output_str << "\tCould not get file:" << std::endl;
@@ -504,6 +654,31 @@ int PNP_Ana::TouchSource(std::string file_name, std::string tree_name, TFile*& f
 	return return_val;
 }
 
+int PNP_Ana::TouchReader(TMVA::Reader*& reader)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::TouchReader(TMVA::Reader*& reader):" << std::endl;
+
+	if(!reader)
+	{
+		if(training_weight_file_dir == "")
+		{
+			output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+
+		reader = new TMVA::Reader("Silent");
+		reader->BookMVA("BDT", (training_weight_file_dir + "factory_BDT.weights.xml").c_str());
+	}
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
 int PNP_Ana::DoMassFit()
 {
 	int return_val = 0;
@@ -538,9 +713,12 @@ int PNP_Ana::DoMassFit()
 	RooDataSet* nprmpt_data_set = nullptr;
 	RooFitResult* result = nullptr;
 
+	RooPlot* plot = nullptr;
+	TCanvas* cnvs = nullptr;
+
 	std::ofstream mass_fit_file;
 
-	return_val = TouchOutput("foo.root", output_file);
+	return_val = TouchOutput(output_file_name, output_file);
 	if(return_val)goto label;
 
 	return_val = TouchSource(prompt_file_name, prompt_ntpl_name, prompt_file, prompt_tree);
@@ -598,6 +776,19 @@ int PNP_Ana::DoMassFit()
 	sigma /= n;
 	sigma = sqrt(sigma);
 
+	if(num_sigma == -1)
+	{
+		output_str << "\tMember \"num_sigma\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(num_gauss == -1)
+	{
+		output_str << "\tMember \"num_gauss\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), -FLT_MAX, FLT_MAX);
 	mean = new RooRealVar("mu", "mu", mu, mu - num_sigma * sigma, mu + num_sigma * sigma);
 	for(i = 0; i < num_gauss; i++)
@@ -654,10 +845,47 @@ int PNP_Ana::DoMassFit()
 
 	result = sgnl->fitTo(*data_set);
 
+	if(plot_name == "")
+	{
+		output_str << "\tMember \"plot_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(plot_file == "")
+	{
+		output_str << "\tMember \"plot_file\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(plot_bins == -1)
+	{
+		output_str << "\tMember \"plot_bins\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	cnvs = new TCanvas((plot_name + "_cnvs").c_str(), (plot_name + "_cnvs").c_str());
+	cnvs->cd();
+	plot = mass->frame(RooFit::Title(plot_name.c_str()));
+	sgnl->plotOn
+	(
+		plot,
+		RooFit::LineColor(kRed),
+		RooFit::LineStyle(1),
+		RooFit::LineWidth(3)
+	);
+	data_set->plotOn
+	(
+		plot,
+		RooFit::Binning(plot_bins, mass_min, mass_max),
+		//RooFit::DataError(),	//default is fine
+		RooFit::MarkerColor(kBlack),
+		RooFit::MarkerStyle(21)
+	);
+	cnvs->SaveAs(plot_file.c_str());
+
 	if(mass_fit_file_name == "")
 	{
 		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
-		output_str << "\tMass fit results will not be written to file" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -690,6 +918,8 @@ int PNP_Ana::DoMassFit()
 	if(data_set)delete data_set;
 	if(prompt_data_set)delete prompt_data_set;
 	if(nprmpt_data_set)delete nprmpt_data_set;
+	if(plot)delete plot;
+	if(cnvs)delete cnvs;
 
 	return return_val;
 }
@@ -723,17 +953,28 @@ int PNP_Ana::DoTraining()
 
 	std::ifstream mass_fit_file;
 
-	return_val = TouchOutput("foo.root", output_file);
+	if(output_file_name == "")
+	{
+		output_str << "\tMember \"output_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	return_val = TouchOutput(output_file_name.c_str(), output_file);
 	if(return_val)goto label;
-
 
 	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
+	if(training_weight_file_dir == "")
+	{
+		output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	(TMVA::gConfig().GetIONames()).fWeightFileDir = training_weight_file_dir.c_str();
 
 	if(mass_fit_file_name == "")
 	{
 		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
-		output_str << "\tMass fit results will not be written to file" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -745,7 +986,6 @@ int PNP_Ana::DoTraining()
 		return_val = 1;
 		goto label;
 	}
-
 	std::getline(mass_fit_file, s);
 	sscanf(s.c_str(), "%*s %f", &mu);
 	for(s; std::getline(mass_fit_file, s);)
@@ -755,10 +995,9 @@ int PNP_Ana::DoTraining()
 		norm += coef;
 		var += coef * sigma * sigma;
 	}
+	mass_fit_file.close();
 	var /= norm;
 	sigma = sqrt(var);
-
-	mass_fit_file.close();
 
 	std::cout << mu << "\t" << sigma << std::endl;
 
@@ -823,10 +1062,123 @@ int PNP_Ana::DoTraining()
 	if(return_val)std::cout << output_str.str();
 	if(output_file)
 	{
-		mass_fit_file.close();
 		output_file->Write();
 		output_file->Close();
 	}
+
+	return return_val;
+}
+
+int PNP_Ana::DoBackgroundCopy()
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::DoBackgroundCopy():" << std::endl;
+
+	int i = 0;
+	Long64_t n = 0;
+
+	TFile* output_file = nullptr;
+	TTree* output_tree = nullptr;
+
+	TFile* bkgrnd_file = nullptr;
+	TTree* bkgrnd_tree = nullptr;
+
+	TMVA::Reader* reader = nullptr;
+
+	float mass = 0.0;
+	float bdtv = 0.0;
+
+	std::vector<float> cvars;
+	std::vector<float> tvars;
+
+	return_val = TouchOutput(output_file_name, output_file);
+	if(return_val)goto label;
+
+	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
+	if(return_val)goto label;
+
+	return_val = TouchReader(reader);
+	if(return_val)goto label;
+
+	output_tree = new TTree(bkgrnd_ntpl_name.c_str(), bkgrnd_ntpl_name.c_str());
+	output_tree->SetDirectory(output_file);
+
+	if(ntuple_mass_name == "")
+	{
+		output_str << "\tMember \"ntuple_mass_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(ntuple_bdtv_name == "")
+	{
+		output_str << "\tMember \"ntuple_bdtv_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(!(bkgrnd_tree->GetBranch(ntuple_mass_name.c_str())))
+	{
+		output_str << "\tFailed to get branch \"" << ntuple_mass_name << "\"" << std::endl;
+		output_str << "\tFrom tree \"" << bkgrnd_ntpl_name << "\"" << std::endl;
+		output_str << "\tFrom file \"" << bkgrnd_file_name << "\"" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	output_tree->Branch(ntuple_mass_name.c_str(), &mass);
+	output_tree->Branch(ntuple_bdtv_name.c_str(), &bdtv);
+	bkgrnd_tree->SetBranchAddress(ntuple_mass_name.c_str(), &mass);
+
+	for(i = 0; i < cut_vars.size(); ++i)
+	{
+		cvars.push_back(0.0);
+
+		if(!(bkgrnd_tree->GetBranch(cut_vars[i].c_str())))
+		{
+			output_str << "\tFailed to get branch \"" << cut_vars[i] << "\"" << std::endl;
+			output_str << "\tFrom tree \"" << bkgrnd_ntpl_name << "\"" << std::endl;
+			output_str << "\tFrom file \"" << bkgrnd_file_name << "\"" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+
+		bkgrnd_tree->SetBranchAddress(cut_vars[i].c_str(), &(cvars[i]));
+		output_tree->Branch(cut_vars[i].c_str(), &(cvars[i]));
+	}
+
+	for(i = 0; i < training_vars.size(); ++i)
+	{
+		tvars.push_back(0.0);
+
+		if(!(bkgrnd_tree->GetBranch(training_vars[i].c_str())))
+		{
+			output_str << "\tFailed to get branch \"" << training_vars[i] << "\"" << std::endl;
+			output_str << "\tFrom tree \"" << bkgrnd_ntpl_name << "\"" << std::endl;
+			output_str << "\tFrom file \"" << bkgrnd_file_name << "\"" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+
+		bkgrnd_tree->SetBranchAddress(training_vars[i].c_str(), &(tvars[i]));
+		output_tree->Branch(training_vars[i].c_str(), &(tvars[i]));
+		reader->AddVariable(training_vars[i].c_str(), &(tvars[i]));
+	}
+
+	for(n = 0; n < bkgrnd_tree->GetEntriesFast(); ++n)
+	{
+		bkgrnd_tree->GetEntry(n);
+		bdtv = reader->EvaluateMVA("BDT");
+		output_tree->Fill();
+	}
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	if(output_file)
+	{
+		output_file->Write();
+		output_file->Close();
+	}
+	if(reader)delete reader;
 
 	return return_val;
 }
@@ -848,6 +1200,7 @@ int PNP_Ana::DoBackgroundFit()
 	TTree* bkgrnd_tree = nullptr;
 
 	RooRealVar* mass = nullptr;
+	RooRealVar* bdtv = nullptr;
 	RooRealVar* mean = nullptr;
 	RooRealVar* wdth = nullptr;
 	RooRealVar* sgnl_count = nullptr;
@@ -869,9 +1222,13 @@ int PNP_Ana::DoBackgroundFit()
 	RooDataSet* data_set = nullptr;
 	RooFitResult* result = nullptr;
 
-	std::ifstream mass_fit_file;
+	TCanvas* cnvs = nullptr;
+	RooPlot* plot = nullptr;
 
-	return_val = TouchOutput("foo.root", output_file);
+	std::ifstream mass_fit_file;
+	std::ofstream bkgd_fit_file;
+
+	return_val = TouchOutput(output_file_name, output_file);
 	if(return_val)goto label;
 
 	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
@@ -880,6 +1237,12 @@ int PNP_Ana::DoBackgroundFit()
 	if(ntuple_mass_name == "")
 	{
 		output_str << "\tMember 'ntuple_mass_name' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(ntuple_bdtv_name == "")
+	{
+		output_str << "\tMember 'ntuple_bdtv_name' is empty string" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -906,6 +1269,25 @@ int PNP_Ana::DoBackgroundFit()
 		goto label;
 	}
 
+	if(num_sigma == -1)
+	{
+		output_str << "\tMember \"num_sigma\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(num_gauss == -1)
+	{
+		output_str << "\tMember \"num_gauss\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(deg_cheby == -1)
+	{
+		output_str << "\tMember \"deg_cheby\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
 	if(mass_fit_file_name == "")
 	{
 		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
@@ -923,6 +1305,7 @@ int PNP_Ana::DoBackgroundFit()
 	std::getline(mass_fit_file, s);
 	sscanf(s.c_str(), "%*s %f", &a);
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), mass_min, mass_max);
+	bdtv = new RooRealVar(ntuple_bdtv_name.c_str(), ntuple_bdtv_name.c_str(), -FLT_MAX, FLT_MAX);
 	wdth = new RooRealVar("w", "w", 1.0, 1.0 / num_sigma, num_sigma);
 	mean = new RooRealVar("mu", "mu", a, a, a);
 	i = 0;
@@ -948,6 +1331,8 @@ int PNP_Ana::DoBackgroundFit()
 
 		++i;
 	}
+	mass_fit_file.close();
+
 	s = "sgnl";
 	sgnl = new RooAddPdf(s.c_str(), s.c_str(), gsses, coefs);
 	sgnl_bkgd.addOwned(*sgnl);
@@ -962,53 +1347,115 @@ int PNP_Ana::DoBackgroundFit()
 	bkgd = new RooChebychev(s.c_str(), s.c_str(), *mass, cheby);
 	sgnl_bkgd.addOwned(*bkgd);
 
-	sgnl_count = new RooRealVar("sgnl_count", "sgnl_count", 0.0, n);
-	bkgd_count = new RooRealVar("bkgd_count", "bkgd_count", n, n);
+	sgnl_count = new RooRealVar("sgnl_count", "sgnl_count", 0.0, 0.0, n);
+	bkgd_count = new RooRealVar("bkgd_count", "bkgd_count", n, 0.0, n);
 	count.addOwned(*sgnl_count);
 	count.addOwned(*bkgd_count);
 
 	model = new RooAddPdf("model", "model", sgnl_bkgd, count);
 
 	cvars.addOwned(*mass);
+	cvars.addOwned(*bdtv);
 	for(i = 0; i < cut_vars.size(); i++)
 	{
 		cvars.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
 	}
 
 	s = "";
+	s += "(";
+	s += ntuple_bdtv_name;
+	s += ">";
+	s += bdt_cut;
+	s += ")";
 	i = 0;
 	while(cut_exprs.size() > 0)
 	{
+		s += "&&";
 		s += "(";
 		s += cut_exprs[i];
 		s += ")";
 
-		i++;
+		++i;
 		if(i >= cut_exprs.size())break;
-
-		s += "&&";
 	}
 
-	if(s != "")
-	{
-		data_set = new RooDataSet("data_set", "data_set", cvars, RooFit::Import(*bkgrnd_tree), RooFit::Cut(s.c_str()));
-	}
-	else
-	{
-		data_set = new RooDataSet("data_set", "data_set", cvars, RooFit::Import(*bkgrnd_tree));
-	}
+	data_set = new RooDataSet("data_set", "data_set", cvars, RooFit::Import(*bkgrnd_tree), RooFit::Cut(s.c_str()));
 
 	result = model->fitTo(*data_set);
+
+	if(bkgd_fit_file_name == "")
+	{
+		output_str << "\tMember \"bkgd_fit_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	bkgd_fit_file.open(bkgd_fit_file_name, std::ios_base::out | std::ios_base::app);
+	if(!bkgd_fit_file.is_open())
+	{
+		output_str << "\tCouldn't open file" << std::endl;
+		output_str << "\t" << bkgd_fit_file_name << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	bkgd_fit_file << "bdt_cut:\t" << bdt_cut << "\t";
+	bkgd_fit_file << "sgnl_counts:\t" << sgnl_count->getValV() << "\t";
+	bkgd_fit_file << "efficiency:\t" << sgnl_count->getValV() / sqrt(sgnl_count->getValV() + bkgd_count->getValV()) << std::endl;
+
+	if(plot_name == "")
+	{
+		output_str << "\tMember \"plot_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(plot_file == "")
+	{
+		output_str << "\tMember \"plot_file\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(plot_bins == -1)
+	{
+		output_str << "\tMember \"plot_bins\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	cnvs = new TCanvas((plot_name + "_cnvs").c_str(), (plot_name + "_cnvs").c_str());
+	cnvs->cd();
+	plot = mass->frame(RooFit::Title(plot_name.c_str()));
+	model->plotOn
+	(
+		plot,
+		RooFit::LineColor(kRed),
+		RooFit::LineStyle(1),
+		RooFit::LineWidth(3)
+	);
+	bkgd->plotOn
+	(
+		plot,
+		RooFit::LineColor(kBlue),
+		RooFit::LineStyle(1),
+		RooFit::LineWidth(3)
+	);
+	data_set->plotOn
+	(
+		plot,
+		RooFit::Binning(plot_bins, mass_min, mass_max),
+		//RooFit::DataError(),	//default is fine
+		RooFit::MarkerColor(kBlack),
+		RooFit::MarkerStyle(21)
+	);
+	cnvs->SaveAs(plot_file.c_str());
 
 	label:
 	output_str << std::ends;
 	if(return_val)std::cout << output_str.str();
 	if(output_file)
 	{
-		mass_fit_file.close();
 		output_file->cd();
 		output_file->Close();
 	}
+	if(plot)delete plot;
+	if(cnvs)delete cnvs;
 
 	return return_val;
 }

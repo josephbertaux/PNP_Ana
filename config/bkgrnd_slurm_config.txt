@@ -5,4 +5,4 @@ SetMaxJobs{2000}
 SetSubTimer{300}
 AddCommandLineArg{v; /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd_tfp_config.txt}
 AddCommandLineArg{d; target}
-AddCommandLineArg{f; /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd.list; 50}
+AddCommandLineArg{f; /home/jbertau/Data/Repositories/PNP_Ana/config/bkgrnd.list; 2}

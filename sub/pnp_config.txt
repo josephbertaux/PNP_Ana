@@ -1,0 +1,9 @@
+SetUserName{jbertau}
+SetExecName{/home/jbertau/Data/Repositories/PNP_Ana/pnp_ana}
+SetOutputDir{/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit}
+SetMaxJobs{2000}
+SetSubTimer{120}
+
+AddCommandLineArg{i; 8} //pT cut index
+AddCommandLineArg{i; 5} //cent cut index
+
