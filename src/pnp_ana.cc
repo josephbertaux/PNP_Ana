@@ -133,16 +133,16 @@ int main(int argc, char* argv[])
 
 
 	//...
-	pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit/out" + suffix + ".root");
-	pnp.SetPlotFile("/home/jbertau/Data/Repositories/PNP_Ana/data/mass_fits/plot" + suffix + ".png");	
-	pnp.SetPlotName("MassFit" + suffix);
-	pnp.SetPlotBins("50");
-	pnp.DoMassFit();
+	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit/out" + suffix + ".root");
+	//pnp.SetPlotFile("/home/jbertau/Data/Repositories/PNP_Ana/data/mass_fits/plot" + suffix + ".png");	
+	//pnp.SetPlotName("MassFit" + suffix);
+	//pnp.SetPlotBins("100");
+	//pnp.DoMassFit();
 
 
 	//...
-	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/tmva/out" + suffix + ".root");
-	//pnp.DoTraining();
+	pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/training/out" + suffix + ".root");
+	pnp.DoTraining();
 
 	//...
 	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/bkgrnd.root");
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
 	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/out" + suffix + "/" + "bdtv" + bdtv + ".root");
 	//pnp.SetPlotFile("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/plot" + suffix + "/" + "bdtv" + bdtv + ".png");
 	//pnp.SetPlotName("BkgdFit" + suffix + "_bdtv" + std::to_string(bdtv));
-	//pnp.SetPlotBins("50");
+	//pnp.SetPlotBins("100");
 	//pnp.DoBackgroundFit();
 
 	return 0;

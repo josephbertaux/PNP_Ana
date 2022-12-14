@@ -789,7 +789,17 @@ int PNP_Ana::DoMassFit()
 		goto label;
 	}
 
-	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), -FLT_MAX, FLT_MAX);
+	if(!mass_min_set)
+	{
+		mass_min = mu - num_sigma * sigma;
+		mass_min_set = true;
+	}
+	if(!mass_max_set)
+	{
+		mass_max_set = mu + num_sigma * sigma;
+		mass_max_set = true;
+	}
+	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), mass_min, mass_max);
 	mean = new RooRealVar("mu", "mu", mu, mu - num_sigma * sigma, mu + num_sigma * sigma);
 	for(i = 0; i < num_gauss; i++)
 	{
@@ -865,22 +875,25 @@ int PNP_Ana::DoMassFit()
 	}
 	cnvs = new TCanvas((plot_name + "_cnvs").c_str(), (plot_name + "_cnvs").c_str());
 	cnvs->cd();
-	plot = mass->frame(RooFit::Title(plot_name.c_str()));
+	plot = new RooPlot(plot_name.c_str(), plot_name.c_str(), *mass, mass_min, mass_max, plot_bins);
 	sgnl->plotOn
 	(
 		plot,
 		RooFit::LineColor(kRed),
 		RooFit::LineStyle(1),
-		RooFit::LineWidth(3)
+		RooFit::LineWidth(3),
+		RooFit::Normalization(data_set->sumEntries())
 	);
 	data_set->plotOn
 	(
 		plot,
 		RooFit::Binning(plot_bins, mass_min, mass_max),
 		//RooFit::DataError(),	//default is fine
+		RooFit::RefreshNorm(),
 		RooFit::MarkerColor(kBlack),
-		RooFit::MarkerStyle(21)
+		RooFit::MarkerStyle(8)
 	);
+	plot->Draw();
 	cnvs->SaveAs(plot_file.c_str());
 
 	if(mass_fit_file_name == "")
@@ -1421,29 +1434,33 @@ int PNP_Ana::DoBackgroundFit()
 	}
 	cnvs = new TCanvas((plot_name + "_cnvs").c_str(), (plot_name + "_cnvs").c_str());
 	cnvs->cd();
-	plot = mass->frame(RooFit::Title(plot_name.c_str()));
+	plot = new RooPlot(plot_name.c_str(), plot_name.c_str(), *mass, mass_min, mass_max, plot_bins);
 	model->plotOn
 	(
 		plot,
 		RooFit::LineColor(kRed),
 		RooFit::LineStyle(1),
-		RooFit::LineWidth(3)
+		RooFit::LineWidth(3),
+		RooFit::Normalization(data_set->sumEntries())
 	);
 	bkgd->plotOn
 	(
 		plot,
 		RooFit::LineColor(kBlue),
 		RooFit::LineStyle(1),
-		RooFit::LineWidth(3)
+		RooFit::LineWidth(3),
+		RooFit::Normalization(data_set->sumEntries())
 	);
 	data_set->plotOn
 	(
 		plot,
 		RooFit::Binning(plot_bins, mass_min, mass_max),
 		//RooFit::DataError(),	//default is fine
+		RooFit::RefreshNorm(),
 		RooFit::MarkerColor(kBlack),
-		RooFit::MarkerStyle(21)
+		RooFit::MarkerStyle(8)
 	);
+	plot->Draw();
 	cnvs->SaveAs(plot_file.c_str());
 
 	label:

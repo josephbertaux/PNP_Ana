@@ -3,7 +3,7 @@ line 1:
 line 2:
 	SetExecName /home/jbertau/Data/Repositories/PNP_Ana/pnp_ana
 line 3:
-	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit
+	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/training
 line 4:
 	SetMaxJobs 2000
 line 5:
@@ -12,46 +12,46 @@ line 7:
 	AddCommandLineArg i 8
 line 8:
 	AddCommandLineArg i 5
-Submitted batch job 17766096
-Submitted batch job 17766097
-Submitted batch job 17766098
-Submitted batch job 17766099
-Submitted batch job 17766100
-Submitted batch job 17766101
-Submitted batch job 17766102
-Submitted batch job 17766103
-Submitted batch job 17766104
-Submitted batch job 17766105
-Submitted batch job 17766106
-Submitted batch job 17766107
-Submitted batch job 17766108
-Submitted batch job 17766109
-Submitted batch job 17766110
-Submitted batch job 17766111
-Submitted batch job 17766112
-Submitted batch job 17766113
-Submitted batch job 17766114
-Submitted batch job 17766115
-Submitted batch job 17766116
-Submitted batch job 17766117
-Submitted batch job 17766118
-Submitted batch job 17766119
-Submitted batch job 17766120
-Submitted batch job 17766121
-Submitted batch job 17766122
-Submitted batch job 17766123
-Submitted batch job 17766124
-Submitted batch job 17766125
-Submitted batch job 17766126
-Submitted batch job 17766127
-Submitted batch job 17766128
-Submitted batch job 17766129
-Submitted batch job 17766130
-Submitted batch job 17766131
-Submitted batch job 17766132
-Submitted batch job 17766133
-Submitted batch job 17766134
-Submitted batch job 17766135
-Tue Dec 13 22:29:58 2022
+Submitted batch job 17766894
+Submitted batch job 17766895
+Submitted batch job 17766896
+Submitted batch job 17766897
+Submitted batch job 17766898
+Submitted batch job 17766899
+Submitted batch job 17766900
+Submitted batch job 17766901
+Submitted batch job 17766902
+Submitted batch job 17766903
+Submitted batch job 17766904
+Submitted batch job 17766905
+Submitted batch job 17766906
+Submitted batch job 17766907
+Submitted batch job 17766908
+Submitted batch job 17766909
+Submitted batch job 17766910
+Submitted batch job 17766911
+Submitted batch job 17766912
+Submitted batch job 17766913
+Submitted batch job 17766914
+Submitted batch job 17766915
+Submitted batch job 17766916
+Submitted batch job 17766917
+Submitted batch job 17766918
+Submitted batch job 17766919
+Submitted batch job 17766920
+Submitted batch job 17766921
+Submitted batch job 17766922
+Submitted batch job 17766923
+Submitted batch job 17766924
+Submitted batch job 17766925
+Submitted batch job 17766926
+Submitted batch job 17766927
+Submitted batch job 17766928
+Submitted batch job 17766929
+Submitted batch job 17766930
+Submitted batch job 17766931
+Submitted batch job 17766932
+Submitted batch job 17766933
+Tue Dec 13 23:34:14 2022
 Submitted batch of 40 jobs (40 total)
 Done
