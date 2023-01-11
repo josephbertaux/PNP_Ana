@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <filesystem>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -115,7 +116,6 @@ public:
 
 	int TouchOutput(std::string, TFile*&);
 	int TouchSource(std::string, std::string, TFile*&, TTree*&);
-	int TouchReader(TMVA::Reader*&);
 
 	int DoMassFit();
 	int DoTraining();

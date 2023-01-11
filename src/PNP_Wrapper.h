@@ -40,7 +40,38 @@ public:
 
 	int ShowHelp(std::vector<std::string>);
 
+	int SetPlotName(std::vector<std::string>);
+	int SetPlotFile(std::vector<std::string>);
+	int SetPlotBins(std::vector<std::string>);
+
+	int SetNumSigma(std::vector<std::string>);
+	int SetNumGauss(std::vector<std::string>);
+	int SetDegCheby(std::vector<std::string>);
+
+	int SetOutputFileName(std::vector<std::string>);
+	int SetMassFitFileName(std::vector<std::string>);
+	int SetBkgdFitFileName(std::vector<std::string>);
+	int SetTrainingWeightFileDir(std::vector<std::string>);
+
 	int SetPromptFileName(std::vector<std::string>);
+	int SetPromptNtplName(std::vector<std::string>);
+
+	int SetNprmptFileName(std::vector<std::string>);
+	int SetNprmptNtplName(std::vector<std::string>);
+
+	int SetBkgrndFileName(std::vector<std::string>);
+	int SetBkgrndNtplName(std::vector<std::string>);
+
+	int SetNtupleBDTVName(std::vector<std::string>);
+	int SetNtupleMassName(std::vector<std::string>);
+	int SetNtupleMassMin(std::vector<std::string>);
+	int SetNtupleMassMax(std::vector<std::string>);
+
+	int SetBDTCut(std::vector<std::string>);
+
+	int AddCutVar(std::vector<std::string>);
+	int AddCutExpr(std::vector<std::string>);
+	int AddTrainingVar(std::vector<std::string>);
 	//...
 };
 

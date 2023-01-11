@@ -587,7 +587,7 @@ int PNP_Ana::TouchOutput(std::string file_name, TFile*& file)
 		return_val = 1;
 		goto label;
 	}
-	file = TFile::Open(file_name.c_str(), "UPDATE");
+	file = nullptr;//= TFile::Open(file_name.c_str(), "UPDATE");
 	if(!file)
 	{
 		output_str << "\tCould not get file:" << std::endl;
@@ -646,31 +646,6 @@ int PNP_Ana::TouchSource(std::string file_name, std::string tree_name, TFile*& f
 		output_str << "\t" << tree_name << std::endl;
 		return_val = 1;
 		goto label;
-	}
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::TouchReader(TMVA::Reader*& reader)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::TouchReader(TMVA::Reader*& reader):" << std::endl;
-
-	if(!reader)
-	{
-		if(training_weight_file_dir == "")
-		{
-			output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
-			return_val = 1;
-			goto label;
-		}
-
-		reader = new TMVA::Reader("Silent");
-		reader->BookMVA("BDT", (training_weight_file_dir + "factory_BDT.weights.xml").c_str());
 	}
 
 	label:
@@ -983,7 +958,19 @@ int PNP_Ana::DoTraining()
 		return_val = 1;
 		goto label;
 	}
-	(TMVA::gConfig().GetIONames()).fWeightFileDir = training_weight_file_dir.c_str();
+
+	if(!std::filesystem::exists(training_weight_file_dir.c_str()))
+	{
+		if(!std::filesystem::create_directories(training_weight_file_dir.c_str()))
+		{
+			output_str << "\tFailed to find or create dir:" << std::endl;
+			output_str << "\t" << training_weight_file_dir << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_weight_file_dir.c_str();
+	//(TMVA::gConfig().GetIONames()).fWeightFileExtension = "root"; //changes the middle part, not the extension
 
 	if(mass_fit_file_name == "")
 	{
@@ -1088,8 +1075,10 @@ int PNP_Ana::DoBackgroundCopy()
 	std::stringstream output_str;
 	output_str << "PNP_Ana::DoBackgroundCopy():" << std::endl;
 
+	bool b;
 	int i = 0;
 	Long64_t n = 0;
+	std::string s = "";
 
 	TFile* output_file = nullptr;
 	TTree* output_tree = nullptr;
@@ -1102,8 +1091,11 @@ int PNP_Ana::DoBackgroundCopy()
 	float mass = 0.0;
 	float bdtv = 0.0;
 
-	std::vector<float> cvars;
-	std::vector<float> tvars;
+	float cvars[cut_vars.size()];
+	float tvars[training_vars.size()];
+
+	RooArgList cargs;
+	RooArgList cexprs;
 
 	return_val = TouchOutput(output_file_name, output_file);
 	if(return_val)goto label;
@@ -1111,11 +1103,10 @@ int PNP_Ana::DoBackgroundCopy()
 	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
 	if(return_val)goto label;
 
-	return_val = TouchReader(reader);
-	if(return_val)goto label;
-
-	output_tree = new TTree(bkgrnd_ntpl_name.c_str(), bkgrnd_ntpl_name.c_str());
+	output_tree = new TTree((bkgrnd_ntpl_name + "_bdtv").c_str(), (bkgrnd_ntpl_name + "_bdtv").c_str());
 	output_tree->SetDirectory(output_file);
+
+	reader = new TMVA::Reader("!Color:!Silent");
 
 	if(ntuple_mass_name == "")
 	{
@@ -1138,13 +1129,10 @@ int PNP_Ana::DoBackgroundCopy()
 		goto label;
 	}
 	output_tree->Branch(ntuple_mass_name.c_str(), &mass);
-	output_tree->Branch(ntuple_bdtv_name.c_str(), &bdtv);
 	bkgrnd_tree->SetBranchAddress(ntuple_mass_name.c_str(), &mass);
 
-	for(i = 0; i < cut_vars.size(); ++i)
+	for(i = 0; i < cut_vars.size(); i++)
 	{
-		cvars.push_back(0.0);
-
 		if(!(bkgrnd_tree->GetBranch(cut_vars[i].c_str())))
 		{
 			output_str << "\tFailed to get branch \"" << cut_vars[i] << "\"" << std::endl;
@@ -1156,12 +1144,17 @@ int PNP_Ana::DoBackgroundCopy()
 
 		bkgrnd_tree->SetBranchAddress(cut_vars[i].c_str(), &(cvars[i]));
 		output_tree->Branch(cut_vars[i].c_str(), &(cvars[i]));
+
+		std::cout << &(cvars[i]) << std::endl;
+
+		cargs.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
 	}
 
-	for(i = 0; i < training_vars.size(); ++i)
-	{
-		tvars.push_back(0.0);
 
+	output_tree->Branch(ntuple_bdtv_name.c_str(), &bdtv);
+
+	for(i = 0; i < training_vars.size(); i++)
+	{
 		if(!(bkgrnd_tree->GetBranch(training_vars[i].c_str())))
 		{
 			output_str << "\tFailed to get branch \"" << training_vars[i] << "\"" << std::endl;
@@ -1173,12 +1166,64 @@ int PNP_Ana::DoBackgroundCopy()
 
 		bkgrnd_tree->SetBranchAddress(training_vars[i].c_str(), &(tvars[i]));
 		output_tree->Branch(training_vars[i].c_str(), &(tvars[i]));
+
 		reader->AddVariable(training_vars[i].c_str(), &(tvars[i]));
 	}
 
-	for(n = 0; n < bkgrnd_tree->GetEntriesFast(); ++n)
+	if(training_weight_file_dir == "")
+	{
+		output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	s = training_weight_file_dir + "dataloader/weights/factory_BDT.weights.xml";
+	if(!std::filesystem::exists(s.c_str()))
+	{
+		output_str << "\tCould not load weights file:" << std::endl;
+		output_str << "\t" << s << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	reader->BookMVA("BDT", s.c_str());
+
+	for(i = 0; i < cut_exprs.size(); i++)
+	{
+		s = "c_";
+		s += std::to_string(i);
+		cexprs.addOwned(*(new RooFormulaVar(s.c_str(), s.c_str(), cut_exprs[i].c_str(), cargs)));
+	}
+
+	bkgrnd_tree->Print();
+
+	for(n = 0; n < bkgrnd_tree->GetEntriesFast(); n++)
 	{
 		bkgrnd_tree->GetEntry(n);
+
+		for(i = 0; i < cut_vars.size(); i++)
+		{
+			((RooRealVar*)&(cargs[i]))->setVal(cvars[i]);
+			if(n < 50)
+			{
+				std::cout << ((RooRealVar*)&(cargs[i]))->GetName() << ":\t" << ((RooRealVar*)&(cargs[i]))->getVal() << "\t" << cvars[i] << std::endl;
+			}
+		}
+		if(n < 50)std::cout << std::endl;
+
+		b = false;
+
+		for(i = 0; i < cut_exprs.size(); i++)
+		{
+			if(((RooFormulaVar*)&(cexprs[i]))->evaluate() == 0.0)
+			{
+				b = true;
+			}
+
+		}
+
+		if(b)continue;
+
 		bdtv = reader->EvaluateMVA("BDT");
 		output_tree->Fill();
 	}
@@ -1354,7 +1399,7 @@ int PNP_Ana::DoBackgroundFit()
 	{
 		s = "d_";
 		s += std::to_string(i);
-		cheby.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 0.0, -FLT_MAX, FLT_MAX)));
+		cheby.addOwned(*(new RooRealVar(s.c_str(), s.c_str(), 0.0, 0.0, 0.0)));
 	}
 	s = "bkgd";
 	bkgd = new RooChebychev(s.c_str(), s.c_str(), *mass, cheby);
@@ -1371,14 +1416,14 @@ int PNP_Ana::DoBackgroundFit()
 	cvars.addOwned(*bdtv);
 	for(i = 0; i < cut_vars.size(); i++)
 	{
-		cvars.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
+		cvars.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), 0.0, -FLT_MAX, FLT_MAX)));
 	}
 
 	s = "";
 	s += "(";
 	s += ntuple_bdtv_name;
 	s += ">";
-	s += bdt_cut;
+	s += std::to_string(bdt_cut);
 	s += ")";
 	i = 0;
 	while(cut_exprs.size() > 0)
@@ -1394,7 +1439,12 @@ int PNP_Ana::DoBackgroundFit()
 
 	data_set = new RooDataSet("data_set", "data_set", cvars, RooFit::Import(*bkgrnd_tree), RooFit::Cut(s.c_str()));
 
-	result = model->fitTo(*data_set);
+	for(i = 0; i < deg_cheby; ++i)
+	{
+		if(i > 0)((RooRealVar*)&(cheby[i-1]))->setRange(-FLT_MAX, FLT_MAX);
+
+		result = model->fitTo(*data_set);
+	}
 
 	if(bkgd_fit_file_name == "")
 	{
@@ -1443,9 +1493,10 @@ int PNP_Ana::DoBackgroundFit()
 		RooFit::LineWidth(3),
 		RooFit::Normalization(data_set->sumEntries())
 	);
-	bkgd->plotOn
+	model->plotOn
 	(
 		plot,
+		RooFit::Components(*bkgd),
 		RooFit::LineColor(kBlue),
 		RooFit::LineStyle(1),
 		RooFit::LineWidth(3),

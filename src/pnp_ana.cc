@@ -28,41 +28,42 @@ int main(int argc, char* argv[])
 	int cent = 0;
 	int bdt = 20;
 
-	if(argc >= 2)
+	int args = 4;
+	if(argc > args)
 	{
 		try
 		{
-			pT = std::stoi(argv[1]);
+			pT = std::stoi(argv[args]);
 		}
 		catch(const std::invalid_argument&)
 		{
-			std::cout << "std::stoi failed to deduce argv[1] (\"" << argv[1] << "\") as int" << std::endl;
+			std::cout << "std::stoi failed to deduce argv[" << std::to_string(args) << "] (\"" << argv[args] << "\") as int" << std::endl;
 			std::cout << "exiting" << std::endl;
 			return 1;
 		}
 	}
-	if(argc >= 3)
+	if(argc > args + 1)
 	{
 		try
 		{
-			cent = std::stoi(argv[2]);
+			cent = std::stoi(argv[args + 1]);
 		}
 		catch(const std::invalid_argument&)
 		{
-			std::cout << "std::stoi failed to deduce argv[2] (\"" << argv[2] << "\") as int" << std::endl;
+			std::cout << "std::stoi failed to deduce argv[" << std::to_string(args + 1) << "] (\"" << argv[args + 1] << "\") as int" << std::endl;
 			std::cout << "exiting" << std::endl;
 			return 1;
 		}
 	}
-	if(argc >= 4)
+	if(argc > args + 2)
 	{
 		try
 		{
-			bdt = std::stoi(argv[3]);
+			bdt = std::stoi(argv[args + 2]);
 		}
 		catch(const std::invalid_argument&)
 		{
-			std::cout << "std::stoi failed to deduce argv[3] (\"" << argv[3] << "\") as int" << std::endl;
+			std::cout << "std::stoi failed to deduce argv[" << std::to_string(args + 2) << "] (\"" << argv[args + 2] << "\") as int" << std::endl;
 			std::cout << "exiting" << std::endl;
 			return 1;
 		}
@@ -91,7 +92,8 @@ int main(int argc, char* argv[])
 
 	PNP_Ana pnp;
 
-	pnp.SetTrainingWeightFileDir("/scratch/brown/jbertau/BD0_Ana_Fall_2022/training/dir" + suffix + "/");
+	pnp.SetTrainingWeightFileDir("/scratch/brown/jbertau/BD0_Ana_Fall_2022/training/training_subdirs/dir" + suffix + "/");
+//	pnp.SetTrainingWeightFileDir(std::string(argv[1]) + "/dir" + suffix + "/");
 
 	pnp.SetMassFitFileName("/home/jbertau/Data/Repositories/PNP_Ana/data/mass_fits/mass_fit" + suffix + ".txt");
 	pnp.SetBkgdFitFileName("/home/jbertau/Data/Repositories/PNP_Ana/data/bkgd_fits/bkgd_fit" + suffix + ".txt");
@@ -107,8 +109,8 @@ int main(int argc, char* argv[])
 	pnp.SetBDTCut(std::to_string(bdt / 20.0 - 1.0));
 
 	pnp.SetNtupleMassName("mass");
-	pnp.SetNtupleMassMin("1.4");
-	pnp.SetNtupleMassMax("2.2");
+	pnp.SetNtupleMassMin("1.75");
+	pnp.SetNtupleMassMax("1.95");
 
 	pnp.AddCutVar("pT");
 	pnp.AddCutVar("cent");
@@ -141,20 +143,22 @@ int main(int argc, char* argv[])
 
 
 	//...
-	pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/training/out" + suffix + ".root");
-	pnp.DoTraining();
+	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/training/out" + suffix + ".root");
+	//pnp.DoTraining();
 
 	//...
-	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/bkgrnd.root");
+	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/bkgrnd" + suffix + ".root");
 	//pnp.DoBackgroundCopy();
 
 	//...
-	//pnp.SetBkgrndFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/bkgrnd.root");
-	//pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/out" + suffix + "/" + "bdtv" + bdtv + ".root");
-	//pnp.SetPlotFile("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/plot" + suffix + "/" + "bdtv" + bdtv + ".png");
-	//pnp.SetPlotName("BkgdFit" + suffix + "_bdtv" + std::to_string(bdtv));
-	//pnp.SetPlotBins("100");
-	//pnp.DoBackgroundFit();
+	pnp.SetBkgrndFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/bkgrnd_bdtv/bkgrnd" + suffix + ".root");
+	pnp.SetBkgrndNtplName("bkgrnd_ntpl_bdtv");
+	pnp.SetOutputFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit/data/" + suffix + "_" + "bdtv" + std::to_string(bdt) + ".root");
+	pnp.SetBkgdFitFileName("/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit/fits/" + suffix + "_" + "bdtv" + std::to_string(bdt) + ".txt");
+	pnp.SetPlotFile("/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit/plots/" + suffix + "_" + "bdtv" + std::to_string(bdt) + ".png");
+	pnp.SetPlotName("BkgdFit" + suffix + "_bdtv" + std::to_string(bdt));
+	pnp.SetPlotBins("100");
+	pnp.DoBackgroundFit();
 
 	return 0;
 }

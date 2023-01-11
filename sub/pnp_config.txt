@@ -1,9 +1,16 @@
 SetUserName{jbertau}
 SetExecName{/home/jbertau/Data/Repositories/PNP_Ana/pnp_ana}
-SetOutputDir{/scratch/brown/jbertau/BD0_Ana_Fall_2022/training}
+SetOutputDir{/scratch/brown/jbertau/BD0_Ana_Fall_2022/mass_fit}
 SetMaxJobs{2000}
 SetSubTimer{120}
 
+//AddCommandLineArg{d; training_subdirs}
+
+AddCommandLineArg{d; data}
+AddCommandLineArg{d; fits}
+AddCommandLineArg{d; plots}
+
 AddCommandLineArg{i; 8} //pT cut index
 AddCommandLineArg{i; 5} //cent cut index
+AddCommandLineArg{i; 40} //bdt cut index
 
