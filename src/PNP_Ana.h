@@ -118,7 +118,8 @@ public:
 	int TouchSource(std::string, std::string, TFile*&, TTree*&);
 
 	int DoMassFit();
-	int DoTraining();
+	int DoInclusiveTraining();
+	int DoExclusiveTraining();
 	int DoBackgroundCopy();
 	int DoBackgroundFit();
 };

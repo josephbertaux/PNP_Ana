@@ -912,11 +912,11 @@ int PNP_Ana::DoMassFit()
 	return return_val;
 }
 
-int PNP_Ana::DoTraining()
+int PNP_Ana::DoInclusiveTraining()
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Ana::DoTraining():" << std::endl;
+	output_str << "PNP_Ana::DoInclusiveTraining():" << std::endl;
 
 	int i = 0;
 	Long64_t n;
@@ -1048,7 +1048,164 @@ int PNP_Ana::DoTraining()
 
 	dataloader->AddSignalTree(prompt_tree);
 	dataloader->AddSignalTree(nprmpt_tree);
+	dataloader->AddBackgroundTree(bkgrnd_tree);
 
+	factory->BookMethod(dataloader, TMVA::Types::kBDT, "BDT", "!H:!V:NTrees=400:MinNodeSize=5%:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20");
+
+	factory->TrainAllMethods();
+	factory->TestAllMethods();
+	factory->EvaluateAllMethods();
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	if(output_file)
+	{
+		output_file->Write();
+		output_file->Close();
+	}
+
+	return return_val;
+}
+
+int PNP_Ana::DoExclusiveTraining()
+{
+	//Only takes signal as nonprompt
+
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::DoExclusiveTraining():" << std::endl;
+
+	int i = 0;
+	Long64_t n;
+	float mu = 0.0;
+	float var = 0.0;
+	float norm = 0.0;
+	float sigma = 0.0;
+	float coef = 0.0;
+	std::string s = "";
+
+	TFile* output_file = nullptr;
+
+	TFile* prompt_file = nullptr;
+	TTree* prompt_tree = nullptr;
+	TFile* nprmpt_file = nullptr;
+	TTree* nprmpt_tree = nullptr;
+	TFile* bkgrnd_file = nullptr;
+	TTree* bkgrnd_tree = nullptr;
+
+	TMVA::Factory *factory = nullptr;;
+	TMVA::DataLoader *dataloader = nullptr;
+
+	std::ifstream mass_fit_file;
+
+	if(output_file_name == "")
+	{
+		output_str << "\tMember \"output_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	return_val = TouchOutput(output_file_name.c_str(), output_file);
+	if(return_val)goto label;
+
+	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
+	dataloader = new TMVA::DataLoader("dataloader");
+	if(training_weight_file_dir == "")
+	{
+		output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	if(!std::filesystem::exists(training_weight_file_dir.c_str()))
+	{
+		if(!std::filesystem::create_directories(training_weight_file_dir.c_str()))
+		{
+			output_str << "\tFailed to find or create dir:" << std::endl;
+			output_str << "\t" << training_weight_file_dir << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_weight_file_dir.c_str();
+	//(TMVA::gConfig().GetIONames()).fWeightFileExtension = "root"; //changes the middle part, not the extension
+
+	if(mass_fit_file_name == "")
+	{
+		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	mass_fit_file.open(mass_fit_file_name, std::ios_base::in);
+	if(!mass_fit_file.is_open())
+	{
+		output_str << "\tCouldn't open file" << std::endl;
+		output_str << "\t" << mass_fit_file_name << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	std::getline(mass_fit_file, s);
+	sscanf(s.c_str(), "%*s %f", &mu);
+	for(s; std::getline(mass_fit_file, s);)
+	{
+		sscanf(s.c_str(), "%*s %f %*s %f", &sigma, &coef);
+
+		norm += coef;
+		var += coef * sigma * sigma;
+	}
+	mass_fit_file.close();
+	var /= norm;
+	sigma = sqrt(var);
+
+	std::cout << mu << "\t" << sigma << std::endl;
+
+	return_val = TouchSource(prompt_file_name, prompt_ntpl_name, prompt_file, prompt_tree);
+	if(return_val)goto label;
+
+	return_val = TouchSource(nprmpt_file_name, nprmpt_ntpl_name, nprmpt_file, nprmpt_tree);
+	if(return_val)goto label;
+
+	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
+	if(return_val)goto label;
+
+	for(i = 0; i < training_vars.size(); ++i)
+	{
+		dataloader->AddVariable(training_vars[i].c_str(), 'F');
+	}
+
+	s = "";
+	i = 0;
+	while(cut_exprs.size() > 0)
+	{
+		s += "(";
+		s += cut_exprs[i];
+		s += ")";
+
+		i++;
+		if(i >= cut_exprs.size())break;
+
+		s += "&&";
+	}
+
+	if(s != "")
+	{
+		dataloader->AddCut(TCut(s.c_str(), s.c_str()), "Signal");
+		dataloader->AddCut(TCut(s.c_str(), s.c_str()), "Background");
+	}
+
+	s = "";
+	s += "((" + std::to_string(mu - 2.0 * num_sigma * sigma) + "<" + ntuple_mass_name + ")";
+	s += "&&";
+	s += "(" + ntuple_mass_name + "<" + std::to_string(mu - num_sigma * sigma) + "))";
+	s += "||";
+	s += "((" + std::to_string(mu + num_sigma * sigma) + "<" + ntuple_mass_name + ")";
+	s += "&&";
+	s += "(" + ntuple_mass_name + "<" + std::to_string(mu + 2.0 * num_sigma * sigma) + "))";
+
+	dataloader->AddCut(TCut(s.c_str(), s.c_str()), "Background");
+
+	dataloader->AddSignalTree(nprmpt_tree);
+	dataloader->AddBackgroundTree(prompt_tree);
 	dataloader->AddBackgroundTree(bkgrnd_tree);
 
 	factory->BookMethod(dataloader, TMVA::Types::kBDT, "BDT", "!H:!V:NTrees=400:MinNodeSize=5%:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20");
