@@ -1,8 +1,5 @@
+#include "PNP_Config.h"
 #include "PNP_Ana.h"
-
-//protected member functions
-
-//public member functions
 
 PNP_Ana::PNP_Ana()
 {
@@ -12,371 +9,6 @@ PNP_Ana::PNP_Ana()
 PNP_Ana::~PNP_Ana()
 {
 	//Do nothing
-}
-
-int PNP_Ana::SetOutputFileName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetOutputFileName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	output_file_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetMassFitFileName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetMassFitFileName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	mass_fit_file_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetBkgdFitFileName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetBkgdFitFileName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	bkgd_fit_file_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetTrainingDir(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetTrainingDir(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	training_dir = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetTrainingIncSubdir(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetTrainingIncSubdir(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	training_inc_subdir = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetTrainingExcSubdir(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetTrainingExcSubdir(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	training_exc_subdir = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetPromptFileName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetPromptFileName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	prompt_file_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetPromptNtplName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetPromptNtplName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	prompt_ntpl_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNprmptFileName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNprmptFileName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	nprmpt_file_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNprmptNtplName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNprmptNtplName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	nprmpt_ntpl_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetBkgrndFileName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetBkgrndFileName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	bkgrnd_file_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetBkgrndNtplName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetBkgrndNtplName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	bkgrnd_ntpl_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNtupleBDTIncName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNtupleBDTIncName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	ntuple_bdt_inc_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNtupleBDTExcName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNtupleBDTExcName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	ntuple_bdt_exc_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNtupleMassName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNtupleMassName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	ntuple_mass_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNtupleMassMin(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNtupleMassMin(std::string s):" << std::endl;
-
-	try
-	{
-		mass_min = std::stof(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stof falled to cast argument \"" << s << "\" as float" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	mass_min_set = true;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNtupleMassMax(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNtupleMassMax(std::string s):" << std::endl;
-
-	try
-	{
-		mass_max = std::stof(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stof falled to cast argument \"" << s << "\" as float" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	mass_max_set = true;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
 }
 
 int PNP_Ana::AddCutVar(std::string s)
@@ -478,165 +110,6 @@ int PNP_Ana::AddTrainingVar(std::string s)
 	return return_val;
 }
 
-int PNP_Ana::SetPlotName(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetPlotName(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	plot_name = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetPlotFile(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetPlotFile(std::string s):" << std::endl;
-
-	if(s == "")
-	{
-		output_str << "\tPassed argument 's' is empty string" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	plot_file = s;
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetPlotBins(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetPlotBins(std::string s):" << std::endl;
-
-	try
-	{
-		plot_bins = std::stoi(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetBDTCut(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetBDTCut(std::string s):" << std::endl;
-
-	try
-	{
-		bdt_cut = std::stof(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stof falled to cast argument \"" << s << "\" as float" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNumSigma(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNumSigma(std::string s):" << std::endl;
-
-	try
-	{
-		num_sigma = std::stoi(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetNumGauss(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNumGauss(std::string s):" << std::endl;
-
-	try
-	{
-		num_gauss = std::stoi(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-int PNP_Ana::SetDegCheby(std::string s)
-{
-	int return_val = 0;
-	std::stringstream output_str;
-	output_str << "PNP_Ana::SetDegCheby(std::string s):" << std::endl;
-
-	try
-	{
-		deg_cheby = std::stoi(s);
-	}
-	catch(const std::invalid_argument&)
-	{
-		output_str << "\tstd::stoi falled to cast argument \"" << s << "\" as int" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-
-	label:
-	output_str << std::ends;
-	if(return_val)std::cout << output_str.str();
-	return return_val;
-}
-
-//member access functions
-
 int PNP_Ana::TouchOutput(std::string file_name, TFile*& file)
 {
 	int return_val = 0;
@@ -717,6 +190,8 @@ int PNP_Ana::TouchSource(std::string file_name, std::string tree_name, TFile*& f
 	return return_val;
 }
 
+//important functions
+
 int PNP_Ana::DoMassFit()
 {
 	int return_val = 0;
@@ -756,7 +231,7 @@ int PNP_Ana::DoMassFit()
 
 	std::ofstream mass_fit_file;
 
-	return_val = TouchOutput(output_file_name, output_file);
+	return_val = TouchOutput(mc_mass_fit_root_file_name, output_file);
 	if(return_val)goto label;
 
 	return_val = TouchSource(prompt_file_name, prompt_ntpl_name, prompt_file, prompt_tree);
@@ -827,15 +302,10 @@ int PNP_Ana::DoMassFit()
 		goto label;
 	}
 
-	if(!mass_min_set)
+	if(mass_max <= mass_min)
 	{
 		mass_min = mu - num_sigma * sigma;
-		mass_min_set = true;
-	}
-	if(!mass_max_set)
-	{
-		mass_max_set = mu + num_sigma * sigma;
-		mass_max_set = true;
+		mass_max = mu + num_sigma * sigma;
 	}
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), mass_min, mass_max);
 	mean = new RooRealVar("mu", "mu", mu, mu - num_sigma * sigma, mu + num_sigma * sigma);
@@ -893,15 +363,15 @@ int PNP_Ana::DoMassFit()
 
 	result = sgnl->fitTo(*data_set);
 
-	if(plot_name == "")
+	if(mc_mass_fit_plot_file_name == "")
 	{
-		output_str << "\tMember \"plot_name\" not set" << std::endl;
+		output_str << "\tMember \"mc_mass_fit_plot_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	if(plot_file == "")
+	if(mc_mass_fit_base_name == "")
 	{
-		output_str << "\tMember \"plot_file\" not set" << std::endl;
+		output_str << "\tMember \"mc_mass_fit_base_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -911,9 +381,9 @@ int PNP_Ana::DoMassFit()
 		return_val = 1;
 		goto label;
 	}
-	cnvs = new TCanvas((plot_name + "_cnvs").c_str(), (plot_name + "_cnvs").c_str());
+	cnvs = new TCanvas((mc_mass_fit_base_name + "_cnvs").c_str(), (mc_mass_fit_base_name + "_cnvs").c_str());
 	cnvs->cd();
-	plot = new RooPlot(plot_name.c_str(), plot_name.c_str(), *mass, mass_min, mass_max, plot_bins);
+	plot = new RooPlot(mc_mass_fit_base_name.c_str(), mc_mass_fit_base_name.c_str(), *mass, mass_min, mass_max, plot_bins);
 	sgnl->plotOn
 	(
 		plot,
@@ -932,15 +402,15 @@ int PNP_Ana::DoMassFit()
 		RooFit::MarkerStyle(8)
 	);
 	plot->Draw();
-	cnvs->SaveAs(plot_file.c_str());
+	cnvs->SaveAs(mc_mass_fit_plot_file_name.c_str());
 
-	if(mass_fit_file_name == "")
+	if(mc_mass_fit_text_file_name == "")
 	{
-		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMember \"mc_mass_fit_text_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	mass_fit_file.open(mass_fit_file_name, std::ios_base::out | std::ios_base::trunc);
+	mass_fit_file.open(mc_mass_fit_text_file_name, std::ios_base::out | std::ios_base::trunc);
 	if(mass_fit_file.is_open())
 	{
 		mass_fit_file << "mu:\t" << mean->getValV() << std::endl;
@@ -1004,14 +474,14 @@ int PNP_Ana::DoInclusiveTraining()
 
 	std::ifstream mass_fit_file;
 
-	if(output_file_name == "")
-	{
-		output_str << "\tMember \"output_file_name\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	return_val = TouchOutput(output_file_name.c_str(), output_file);
-	if(return_val)goto label;
+	//if(output_file_name == "")
+	//{
+	//	output_str << "\tMember \"output_file_name\" not set" << std::endl;
+	//	return_val = 1;
+	//	goto label;
+	//}
+	//return_val = TouchOutput(output_file_name.c_str(), output_file);
+	//if(return_val)goto label;
 
 	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
@@ -1041,17 +511,17 @@ int PNP_Ana::DoInclusiveTraining()
 	}
 	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_inc_subdir.c_str();
 
-	if(mass_fit_file_name == "")
+	if(mc_mass_fit_text_file_name == "")
 	{
-		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMember \"mc_mass_fit_text_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	mass_fit_file.open(mass_fit_file_name, std::ios_base::in);
+	mass_fit_file.open(mc_mass_fit_text_file_name, std::ios_base::in);
 	if(!mass_fit_file.is_open())
 	{
 		output_str << "\tCouldn't open file" << std::endl;
-		output_str << "\t" << mass_fit_file_name << std::endl;
+		output_str << "\t" << mc_mass_fit_text_file_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1168,14 +638,14 @@ int PNP_Ana::DoExclusiveTraining()
 
 	std::ifstream mass_fit_file;
 
-	if(output_file_name == "")
-	{
-		output_str << "\tMember \"output_file_name\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	return_val = TouchOutput(output_file_name.c_str(), output_file);
-	if(return_val)goto label;
+	//if(output_file_name == "")
+	//{
+	//	output_str << "\tMember \"output_file_name\" not set" << std::endl;
+	//	return_val = 1;
+	//	goto label;
+	//}
+	//return_val = TouchOutput(output_file_name.c_str(), output_file);
+	//if(return_val)goto label;
 
 	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
@@ -1205,17 +675,17 @@ int PNP_Ana::DoExclusiveTraining()
 	}
 	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_exc_subdir.c_str();
 
-	if(mass_fit_file_name == "")
+	if(mc_mass_fit_text_file_name == "")
 	{
-		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMember \"mc_mass_fit_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	mass_fit_file.open(mass_fit_file_name, std::ios_base::in);
+	mass_fit_file.open(mc_mass_fit_text_file_name, std::ios_base::in);
 	if(!mass_fit_file.is_open())
 	{
 		output_str << "\tCouldn't open file" << std::endl;
-		output_str << "\t" << mass_fit_file_name << std::endl;
+		output_str << "\t" << mc_mass_fit_text_file_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1331,13 +801,13 @@ int PNP_Ana::ApplyTraining()
 	RooArgList cargs;
 	RooArgList cexprs;
 
-	if(output_file_name == "")
+	if(traind_file_name == "")
 	{
-		output_str << "\tMember \"output_file_name\" not set" << std::endl;
+		output_str << "\tMember \"traind_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	return_val = TouchOutput(output_file_name, output_file);
+	return_val = TouchOutput(traind_file_name, output_file);
 	if(return_val)goto label;
 
 	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
@@ -1391,20 +861,20 @@ int PNP_Ana::ApplyTraining()
 		cargs.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
 	}
 
-	if(ntuple_bdt_inc_name == "")
+	if(bdt_inc_name == "")
 	{
-		output_str << "\tMember \"ntuple_bdt_inc_name\" not set" << std::endl;
+		output_str << "\tMember \"bdt_inc_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	output_tree->Branch(ntuple_bdt_inc_name.c_str(), &bdt_inc);
-	if(ntuple_bdt_exc_name == "")
+	output_tree->Branch(bdt_inc_name.c_str(), &bdt_inc);
+	if(bdt_exc_name == "")
 	{
-		output_str << "\tMember \"ntuple_bdt_exc_name\" not set" << std::endl;
+		output_str << "\tMember \"bdt_exc_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	output_tree->Branch(ntuple_bdt_exc_name.c_str(), &bdt_exc);
+	output_tree->Branch(bdt_exc_name.c_str(), &bdt_exc);
 
 	for(i = 0; i < training_vars.size(); i++)
 	{
@@ -1555,10 +1025,10 @@ int PNP_Ana::DoBackgroundFit()
 	std::ifstream mass_fit_file;
 	std::ofstream bkgd_fit_file;
 
-	return_val = TouchOutput(output_file_name, output_file);
+	return_val = TouchOutput(data_mass_fit_root_file_name, output_file);
 	if(return_val)goto label;
 
-	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
+	return_val = TouchSource(traind_file_name, traind_ntpl_name, bkgrnd_file, bkgrnd_tree);
 	if(return_val)goto label;
 
 	if(ntuple_mass_name == "")
@@ -1567,23 +1037,15 @@ int PNP_Ana::DoBackgroundFit()
 		return_val = 1;
 		goto label;
 	}
-	if(ntuple_bdt_inc_name == "")
+	if(bdt_inc_name == "")
 	{
 		output_str << "\tMember 'ntuple_bdt_inc_name' is empty string" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	if(!mass_min_set)
+	if(mass_max <= mass_min)
 	{
-		output_str << "\tMember \"mass_min\" not set" << std::endl;
-		output_str << "\tCall \"PNP_Ana::SetMassMin(std::string)\"" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	if(!mass_max_set)
-	{
-		output_str << "\tMember \"mass_max\" not set" << std::endl;
-		output_str << "\tCall \"PNP_Ana::SetMassMax(std::string)\"" << std::endl;
+		output_str << "\tMembers \"mass_min\" and \"mass_min\" incompatable" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1615,24 +1077,24 @@ int PNP_Ana::DoBackgroundFit()
 		goto label;
 	}
 
-	if(mass_fit_file_name == "")
+	if(data_mass_fit_text_file_name == "")
 	{
-		output_str << "\tMember \"mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMember \"data_mass_fit_text_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	mass_fit_file.open(mass_fit_file_name, std::ios_base::in);
+	mass_fit_file.open(mc_mass_fit_text_file_name, std::ios_base::in);
 	if(!mass_fit_file.is_open())
 	{
 		output_str << "\tCouldn't open file" << std::endl;
-		output_str << "\t" << mass_fit_file_name << std::endl;
+		output_str << "\t" << mc_mass_fit_text_file_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
 	std::getline(mass_fit_file, s);
 	sscanf(s.c_str(), "%*s %f", &a);
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), mass_min, mass_max);
-	bdt_inc = new RooRealVar(ntuple_bdt_inc_name.c_str(), ntuple_bdt_inc_name.c_str(), -FLT_MAX, FLT_MAX);
+	bdt_inc = new RooRealVar(bdt_inc_name.c_str(), bdt_inc_name.c_str(), -FLT_MAX, FLT_MAX);
 	wdth = new RooRealVar("w", "w", 1.0, 1.0 / num_sigma, num_sigma);
 	mean = new RooRealVar("mu", "mu", a, a, a);
 	i = 0;
@@ -1690,7 +1152,7 @@ int PNP_Ana::DoBackgroundFit()
 
 	s = "";
 	s += "(";
-	s += ntuple_bdt_inc_name;
+	s += bdt_inc_name;
 	s += ">";
 	s += std::to_string(bdt_cut);
 	s += ")";
@@ -1715,17 +1177,17 @@ int PNP_Ana::DoBackgroundFit()
 		result = model->fitTo(*data_set);
 	}
 
-	if(bkgd_fit_file_name == "")
+	if(data_mass_fit_text_file_name == "")
 	{
-		output_str << "\tMember \"bkgd_fit_file_name\" not set" << std::endl;
+		output_str << "\tMember \"data_mass_fit_text_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	bkgd_fit_file.open(bkgd_fit_file_name, std::ios_base::out | std::ios_base::app);
+	bkgd_fit_file.open(data_mass_fit_text_file_name, std::ios_base::out | std::ios_base::app);
 	if(!bkgd_fit_file.is_open())
 	{
 		output_str << "\tCouldn't open file" << std::endl;
-		output_str << "\t" << bkgd_fit_file_name << std::endl;
+		output_str << "\t" << data_mass_fit_text_file_name << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1733,15 +1195,15 @@ int PNP_Ana::DoBackgroundFit()
 	bkgd_fit_file << "sgnl_counts:\t" << sgnl_count->getValV() << "\t";
 	bkgd_fit_file << "efficiency:\t" << sgnl_count->getValV() / sqrt(sgnl_count->getValV() + bkgd_count->getValV()) << std::endl;
 
-	if(plot_name == "")
+	if(data_mass_fit_plot_file_name == "")
 	{
-		output_str << "\tMember \"plot_name\" not set" << std::endl;
+		output_str << "\tMember \"data_mass_fit_plot_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	if(plot_file == "")
+	if(data_mass_fit_base_name == "")
 	{
-		output_str << "\tMember \"plot_file\" not set" << std::endl;
+		output_str << "\tMember \"data_mass_fit_base_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1751,9 +1213,9 @@ int PNP_Ana::DoBackgroundFit()
 		return_val = 1;
 		goto label;
 	}
-	cnvs = new TCanvas((plot_name + "_cnvs").c_str(), (plot_name + "_cnvs").c_str());
+	cnvs = new TCanvas((data_mass_fit_base_name + "_cnvs").c_str(), (data_mass_fit_base_name + "_cnvs").c_str());
 	cnvs->cd();
-	plot = new RooPlot(plot_name.c_str(), plot_name.c_str(), *mass, mass_min, mass_max, plot_bins);
+	plot = new RooPlot(data_mass_fit_base_name.c_str(), data_mass_fit_base_name.c_str(), *mass, mass_min, mass_max, plot_bins);
 	model->plotOn
 	(
 		plot,
@@ -1781,7 +1243,7 @@ int PNP_Ana::DoBackgroundFit()
 		RooFit::MarkerStyle(8)
 	);
 	plot->Draw();
-	cnvs->SaveAs(plot_file.c_str());
+	cnvs->SaveAs(data_mass_fit_plot_file_name.c_str());
 
 	label:
 	output_str << std::ends;

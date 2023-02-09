@@ -1,30 +1,50 @@
+#include "PNP_Ana.h"
 #include "PNP_Config.h"
 
-std::string const PNP_Config::scratch_dir =		"/scratch/brown/jbertau/BD0_Ana_Fall_2022/";
-std::string const PNP_Config::prompt_file_name =	"prompt/target/target0_1.root";
-std::string const PNP_Config::nprmpt_file_name =	"nprmpt/target/target0_1.root";
-std::string const PNP_Config::bkgrnd_file_name =	"bkgrnd/target/target0_2.root";
-std::string const PNP_Config::prompt_ntpl_name =	"prompt_ntpl";
-std::string const PNP_Config::nprmpt_ntpl_name =	"nprmpt_ntpl";
-std::string const PNP_Config::bkgrnd_ntpl_name =	"bkgrnd_ntpl";
+int const PNP_Config::bdt_num_cuts =				40;
 
-std::string const PNP_Config::ntuple_mass_name =	"mass";
-std::string const PNP_Config::ntuple_mass_min =		"1.75";
-std::string const PNP_Config::ntuple_mass_max =		"1.95";
+std::string const PNP_Config::root_dir =			"/scratch/brown/jbertau/BD0_Ana_Fall_2022/";
 
-std::string const PNP_Config::traind_ntpl_name =	"traind_ntpl";
-std::string const PNP_Config::ntuple_bdt_inc_name =	"bdt_inc";
-std::string const PNP_Config::ntuple_bdt_exc_name =	"bdt_exc";
-std::string const PNP_Config::training_dir =		"dataset/weights/";
-std::string const PNP_Config::training_inc_subdir =	"inc/";
-std::string const PNP_Config::training_exc_subdir =	"exc/";
+std::string const PNP_Config::mc_mass_fit_root_subdir =		"mc_mass_fits/out/fit_ntpl";
+std::string const PNP_Config::mc_mass_fit_text_subdir =		"mc_mass_fits/txt/fit_prms";
+std::string const PNP_Config::mc_mass_fit_plot_subdir =		"mc_mass_fits/plt/fit_plot";
+std::string const PNP_Config::mc_mass_fit_base_name =		"mc_mass_fit";
 
-std::string const PNP_Config::num_sigma = "3";
-std::string const PNP_Config::num_gauss = "3";
-std::string const PNP_Config::deg_cheby = "3";
+std::string const PNP_Config::training_dir =			"dataset/weights/";
+std::string const PNP_Config::training_inc_subdir =		"inc/";
+std::string const PNP_Config::training_exc_subdir =		"exc/";
 
-std::string const PNP_Config::pT = "pT";
-std::string const PNP_Config::cent = "cent";
+std::string const PNP_Config::data_mass_fit_root_subdir =	"data_mass_fits/out/fit_ntpl";
+std::string const PNP_Config::data_mass_fit_text_subdir =	"data_mass_fits/txt/fit_prms";
+std::string const PNP_Config::data_mass_fit_plot_subdir =	"data_mass_fits/plt/fit_plot";
+std::string const PNP_Config::data_mass_fit_base_name =		"data_mass_fit";
+
+int const PNP_Config::plot_bins =				50;
+
+std::string const PNP_Config::prompt_file_name =		"prompt/target/target0_1.root";
+std::string const PNP_Config::nprmpt_file_name =		"nprmpt/target/target0_1.root";
+std::string const PNP_Config::bkgrnd_file_name =		"bkgrnd/target/target0_2.root";
+
+std::string const PNP_Config::prompt_ntpl_name =		"prompt_ntpl";
+std::string const PNP_Config::nprmpt_ntpl_name =		"nprmpt_ntpl";
+std::string const PNP_Config::bkgrnd_ntpl_name =		"bkgrnd_ntpl";
+
+std::string const PNP_Config::ntuple_mass_name =		"mass";
+float const PNP_Config::mass_min =				1.75;
+float const PNP_Config::mass_max =				1.95;
+
+std::string const PNP_Config::traind_ntpl_subdir =		"traind/bdt_ntpl";
+std::string const PNP_Config::traind_ntpl_name =		"traind_ntpl";
+std::string const PNP_Config::bdt_inc_name =			"bdt_inc";
+std::string const PNP_Config::bdt_exc_name =			"bdt_exc";
+
+int const PNP_Config::num_sigma =				3;
+int const PNP_Config::num_gauss = 				3;
+int const PNP_Config::deg_cheby = 				3;
+
+std::string const PNP_Config::pT =				"pT";
+std::string const PNP_Config::cent =				"cent";
+std::string const PNP_Config::bdt =				"bdt";
 
 std::vector<std::string> const PNP_Config::training_vars =
 {
@@ -62,18 +82,18 @@ std::vector<std::string> const PNP_Config::cent_cuts =
 	"(50.0<="+PNP_Config::cent+")&&("+PNP_Config::cent+"<90.0)",
 };
 
-PNP_Ana* PNP_Config::Config(int argc, char* argv[])
+PNP_Ana* PNP_Config::Config(int args, int argc, char* argv[])
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Config::config(int argc, char* argv[]):" << std::endl;
+	output_str << "PNP_Config::Config(int argc, char* argv[]):" << std::endl;
 
 	PNP_Ana* pnp_ana = nullptr;
 	int i = 0;
 	int arg[3] = {0, 0, bdt_num_cuts / 2};
 	std::string s = "";
 
-	for(i = 0; i < 3; ++i)
+	for(i = 0; i < 2; ++i)
 	{
 		if(argc > args + i)
 		{
@@ -94,24 +114,55 @@ PNP_Ana* PNP_Config::Config(int argc, char* argv[])
 
 	pnp_ana = new PNP_Ana();
 
-	if(pnp_ana->SetPromptFileName(scratch_dir + prompt_file_name))	{return_val = 1; goto label;}
-	if(pnp_ana->SetNprmptFileName(scratch_dir + nprmpt_file_name))	{return_val = 1; goto label;}
-	if(pnp_ana->SetBkgrndFileName(scratch_dir + bkgrnd_file_name))	{return_val = 1; goto label;}
+	s = pTcentSuffix(args, argc, argv);
+	if(!s.empty())
+	{
+		pnp_ana->mc_mass_fit_root_file_name = root_dir + mc_mass_fit_root_subdir + s + ".root";
+		pnp_ana->mc_mass_fit_root_file_name = root_dir + mc_mass_fit_text_subdir + s + ".txt";
+		pnp_ana->mc_mass_fit_root_file_name = root_dir + mc_mass_fit_plot_subdir + s + ".png";
+		pnp_ana->mc_mass_fit_base_name = mc_mass_fit_base_name + s;
+	}
 
-	if(pnp_ana->SetPromptNtplName(prompt_ntpl_name))		{return_val = 1; goto label;}
-	if(pnp_ana->SetNprmptNtplName(nprmpt_ntpl_name))		{return_val = 1; goto label;}
-	if(pnp_ana->SetBkgrndNtplName(bkgrnd_ntpl_name))		{return_val = 1; goto label;}
+	pnp_ana->training_dir = training_dir;
+	pnp_ana->training_inc_subdir = training_inc_subdir;
+	pnp_ana->training_exc_subdir = training_exc_subdir;
 
-	if(pnp_ana->SetNtupleMassName(ntuple_mass_name))		{return_val = 1; goto label;}
-	if(pnp_ana->SetNtupleMassMin(ntuple_mass_min))			{return_val = 1; goto label;}
-	if(pnp_ana->SetNtupleMassMax(ntuple_mass_max))			{return_val = 1; goto label;}
+	s = bdtSuffix(args, argc, argv);
+	if(!s.empty())
+	{
+		pnp_ana->data_mass_fit_root_file_name = root_dir + data_mass_fit_root_subdir + s + ".root";
+		pnp_ana->data_mass_fit_root_file_name = root_dir + data_mass_fit_text_subdir + s + ".txt";
+		pnp_ana->data_mass_fit_root_file_name = root_dir + data_mass_fit_plot_subdir + s + ".png";
+		pnp_ana->data_mass_fit_base_name = data_mass_fit_base_name + s;
+	}
 
-	if(pnp_ana->SetTrainingDir(training_dir))			{return_val = 1; goto label;}
-	if(pnp_ana->SetTrainingIncSubdir(training_inc_subdir))		{return_val = 1; goto label;}
-	if(pnp_ana->SetTrainingExcSubdir(training_exc_subdir))		{return_val = 1; goto label;}
+	pnp_ana->plot_bins = plot_bins;
 
-	if(pnp_ana->SetNtupleBDTIncName(ntuple_bdt_inc_name))		{return_val = 1; goto label;}
-	if(pnp_ana->SetNtupleBDTExcName(ntuple_bdt_exc_name))		{return_val = 1; goto label;}
+	pnp_ana->prompt_file_name = root_dir + prompt_file_name;
+	pnp_ana->nprmpt_file_name = root_dir + nprmpt_file_name;
+	pnp_ana->bkgrnd_file_name = root_dir + bkgrnd_file_name;
+
+	pnp_ana->prompt_ntpl_name = prompt_ntpl_name;
+	pnp_ana->nprmpt_ntpl_name = nprmpt_ntpl_name;
+	pnp_ana->bkgrnd_ntpl_name = bkgrnd_ntpl_name;
+
+	pnp_ana->ntuple_mass_name = ntuple_mass_name;
+	pnp_ana->mass_min = mass_min;
+	pnp_ana->mass_max = mass_max;
+
+	s = pTcentSuffix(args, argc, argv);
+	if(!s.empty())
+	{
+		pnp_ana->traind_file_name = traind_ntpl_subdir + s + ".root";
+	}
+	pnp_ana->traind_ntpl_name = traind_ntpl_name;
+	pnp_ana->bdt_inc_name = bdt_inc_name;
+	pnp_ana->bdt_exc_name = bdt_exc_name;
+	pnp_ana->bdt_cut = (arg[2] - bdt_num_cuts / 2.0) / bdt_num_cuts;
+
+	pnp_ana->num_sigma = num_sigma;
+	pnp_ana->num_gauss = num_gauss;
+	pnp_ana->deg_cheby = deg_cheby;
 
 	if(pnp_ana->AddCutVar(pT))					{return_val = 1; goto label;}
 	if(pnp_ana->AddCutVar(cent))					{return_val = 1; goto label;}
@@ -133,4 +184,95 @@ PNP_Ana* PNP_Config::Config(int argc, char* argv[])
 		pnp_ana = nullptr;
 	}
 	return pnp_ana;
+}
+
+std::string PNP_Config::pTcentSuffix(int args, int argc, char* argv[])
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Config::pTcentSuffix(int argc, char* argv[]):" << std::endl;
+
+	int i = 0;
+	int arg[2] = {0, 0};
+	std::string s = "";
+
+	for(i = 0; i < 2; ++i)
+	{
+		if(argc <= args + i)
+		{
+			output_str << "\tinsufficient arguments" << std::endl;
+			output_str << "\texpected at least " << args + i + 1 << " arguments" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+
+		try
+		{
+			arg[i] = std::stoi(argv[args + i]);
+		}
+		catch(const std::invalid_argument&)
+		{
+			output_str << "\tstd::stoi failed to deduce argv[" << std::to_string(args + i) << "]" << std::endl;
+			output_str << "\t(value \"" << argv[args + i] << "\")" << std::endl;
+			output_str << "\tas int" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+	s = "_"+pT+std::to_string(arg[0])+"_"+cent+std::to_string(arg[1]);
+
+	label:
+	output_str << std::endl << std::ends;
+	if(return_val)
+	{
+		std::cout << output_str.str();
+		s = "";
+	}
+	return s;
+}
+
+std::string PNP_Config::bdtSuffix(int args, int argc, char* argv[])
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Config::bdtSuffix(int argc, char* argv[]):" << std::endl;
+
+	int i = 0;
+	int arg[3] = {0, 0, bdt_num_cuts / 2};
+	std::string s = "";
+
+	for(i = 0; i < 3; ++i)
+	{
+		if(argc <= args + i)
+		{
+			output_str << "\tinsufficient arguments" << std::endl;
+			output_str << "\texpected at least " << args + i + 1 << " arguments" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+
+		try
+		{
+			arg[i] = std::stoi(argv[args + i]);
+		}
+		catch(const std::invalid_argument&)
+		{
+			output_str << "\tstd::stoi failed to deduce argv[" << std::to_string(args + i) << "]" << std::endl;
+			output_str << "\t(value \"" << argv[args + i] << "\")" << std::endl;
+			output_str << "\tas int" << std::endl;
+			return_val = 1;
+			goto label;
+		}
+	}
+	s = "_"+bdt+std::to_string(arg[2]);
+	s = "_"+pT+std::to_string(arg[0])+"_"+cent+std::to_string(arg[1])+"_"+bdt+std::to_string(arg[2]);
+
+	label:
+	output_str << std::endl << std::ends;
+	if(return_val)
+	{
+		std::cout << output_str.str();
+		s = "";
+	}
+	return s;
 }

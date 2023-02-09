@@ -1,0 +1,13 @@
+SetUserName{jbertau}
+SetExecName{/home/jbertau/Data/Repositories/PNP_Ana/exe/5_data_mass_fits.exe}
+SetOutputDir{/scratch/brown/jbertau/BD0_Ana_Fall_2022/data_mass_fits}
+SetMaxJobs{2000}
+SetSubTimer{120}
+
+AddCommandLineArg{d; out} //useless root files
+AddCommandLineArg{d; txt}
+AddCommandLineArg{d; plt}
+
+AddCommandLineArg{i; 8} //pT cut index
+AddCommandLineArg{i; 5} //cent cut index
+AddCommandLineArg{i; 40} //bdt cut index
