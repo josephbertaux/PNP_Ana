@@ -77,11 +77,11 @@ int PNP_Ana::SetBkgdFitFileName(std::string s)
 	return return_val;
 }
 
-int PNP_Ana::SetTrainingWeightFileDir(std::string s)
+int PNP_Ana::SetTrainingDir(std::string s)
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Ana::SetTrainingWeightFileDir(std::string s):" << std::endl;
+	output_str << "PNP_Ana::SetTrainingDir(std::string s):" << std::endl;
 
 	if(s == "")
 	{
@@ -90,7 +90,49 @@ int PNP_Ana::SetTrainingWeightFileDir(std::string s)
 		goto label;
 	}
 
-	training_weight_file_dir = s;
+	training_dir = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetTrainingIncSubdir(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetTrainingIncSubdir(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	training_inc_subdir = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetTrainingExcSubdir(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetTrainingExcSubdir(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	training_exc_subdir = s;
 
 	label:
 	output_str << std::ends;
@@ -224,11 +266,11 @@ int PNP_Ana::SetBkgrndNtplName(std::string s)
 	return return_val;
 }
 
-int PNP_Ana::SetNtupleBDTVName(std::string s)
+int PNP_Ana::SetNtupleBDTIncName(std::string s)
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Ana::SetNtupleTMVAName(std::string s):" << std::endl;
+	output_str << "PNP_Ana::SetNtupleBDTIncName(std::string s):" << std::endl;
 
 	if(s == "")
 	{
@@ -237,7 +279,28 @@ int PNP_Ana::SetNtupleBDTVName(std::string s)
 		goto label;
 	}
 
-	ntuple_bdtv_name = s;
+	ntuple_bdt_inc_name = s;
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	return return_val;
+}
+
+int PNP_Ana::SetNtupleBDTExcName(std::string s)
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::SetNtupleBDTExcName(std::string s):" << std::endl;
+
+	if(s == "")
+	{
+		output_str << "\tPassed argument 's' is empty string" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+
+	ntuple_bdt_exc_name = s;
 
 	label:
 	output_str << std::ends;
@@ -952,25 +1015,31 @@ int PNP_Ana::DoInclusiveTraining()
 
 	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
-	if(training_weight_file_dir == "")
+
+	if(training_dir == "")
 	{
-		output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+		output_str << "\tMember \"training_dir\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-
-	if(!std::filesystem::exists(training_weight_file_dir.c_str()))
+	if(training_inc_subdir == "")
 	{
-		if(!std::filesystem::create_directories(training_weight_file_dir.c_str()))
+		output_str << "\tMember \"training_inc_subdir\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	s = training_dir + training_inc_subdir;
+	if(!std::filesystem::exists(s.c_str()))
+	{
+		if(!std::filesystem::create_directories(training_dir.c_str()))
 		{
 			output_str << "\tFailed to find or create dir:" << std::endl;
-			output_str << "\t" << training_weight_file_dir << std::endl;
+			output_str << "\t" << s << std::endl;
 			return_val = 1;
 			goto label;
 		}
 	}
-	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_weight_file_dir.c_str();
-	//(TMVA::gConfig().GetIONames()).fWeightFileExtension = "root"; //changes the middle part, not the extension
+	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_inc_subdir.c_str();
 
 	if(mass_fit_file_name == "")
 	{
@@ -1110,25 +1179,31 @@ int PNP_Ana::DoExclusiveTraining()
 
 	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
-	if(training_weight_file_dir == "")
+
+	if(training_dir == "")
 	{
-		output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+		output_str << "\tMember \"training_dir\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-
-	if(!std::filesystem::exists(training_weight_file_dir.c_str()))
+	if(training_exc_subdir == "")
 	{
-		if(!std::filesystem::create_directories(training_weight_file_dir.c_str()))
+		output_str << "\tMember \"training_exc_subdir\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	s = training_dir + training_exc_subdir;
+	if(!std::filesystem::exists(s.c_str()))
+	{
+		if(!std::filesystem::create_directories(training_dir.c_str()))
 		{
 			output_str << "\tFailed to find or create dir:" << std::endl;
-			output_str << "\t" << training_weight_file_dir << std::endl;
+			output_str << "\t" << s << std::endl;
 			return_val = 1;
 			goto label;
 		}
 	}
-	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_weight_file_dir.c_str();
-	//(TMVA::gConfig().GetIONames()).fWeightFileExtension = "root"; //changes the middle part, not the extension
+	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_exc_subdir.c_str();
 
 	if(mass_fit_file_name == "")
 	{
@@ -1226,11 +1301,11 @@ int PNP_Ana::DoExclusiveTraining()
 	return return_val;
 }
 
-int PNP_Ana::DoBackgroundCopy()
+int PNP_Ana::ApplyTraining()
 {
 	int return_val = 0;
 	std::stringstream output_str;
-	output_str << "PNP_Ana::DoBackgroundCopy():" << std::endl;
+	output_str << "PNP_Ana::ApplyTraining():" << std::endl;
 
 	bool b;
 	int i = 0;
@@ -1243,10 +1318,12 @@ int PNP_Ana::DoBackgroundCopy()
 	TFile* bkgrnd_file = nullptr;
 	TTree* bkgrnd_tree = nullptr;
 
-	TMVA::Reader* reader = nullptr;
+	TMVA::Reader* reader_inc = nullptr;
+	TMVA::Reader* reader_exc = nullptr;
 
 	float mass = 0.0;
-	float bdtv = 0.0;
+	float bdt_inc = 0.0;
+	float bdt_exc = 0.0;
 
 	float cvars[cut_vars.size()];
 	float tvars[training_vars.size()];
@@ -1254,26 +1331,33 @@ int PNP_Ana::DoBackgroundCopy()
 	RooArgList cargs;
 	RooArgList cexprs;
 
+	if(output_file_name == "")
+	{
+		output_str << "\tMember \"output_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
 	return_val = TouchOutput(output_file_name, output_file);
 	if(return_val)goto label;
 
 	return_val = TouchSource(bkgrnd_file_name, bkgrnd_ntpl_name, bkgrnd_file, bkgrnd_tree);
 	if(return_val)goto label;
 
-	output_tree = new TTree((bkgrnd_ntpl_name + "_bdtv").c_str(), (bkgrnd_ntpl_name + "_bdtv").c_str());
+	if(traind_ntpl_name == "")
+	{
+		output_str << "\tMember \"traind_ntpl_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	output_tree = new TTree(traind_ntpl_name.c_str(), traind_ntpl_name.c_str());
 	output_tree->SetDirectory(output_file);
 
-	reader = new TMVA::Reader("!Color:!Silent");
+	reader_inc = new TMVA::Reader("!Color:!Silent");
+	reader_exc = new TMVA::Reader("!Color:!Silent");
 
 	if(ntuple_mass_name == "")
 	{
 		output_str << "\tMember \"ntuple_mass_name\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	if(ntuple_bdtv_name == "")
-	{
-		output_str << "\tMember \"ntuple_bdtv_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1307,8 +1391,20 @@ int PNP_Ana::DoBackgroundCopy()
 		cargs.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
 	}
 
-
-	output_tree->Branch(ntuple_bdtv_name.c_str(), &bdtv);
+	if(ntuple_bdt_inc_name == "")
+	{
+		output_str << "\tMember \"ntuple_bdt_inc_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	output_tree->Branch(ntuple_bdt_inc_name.c_str(), &bdt_inc);
+	if(ntuple_bdt_exc_name == "")
+	{
+		output_str << "\tMember \"ntuple_bdt_exc_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	output_tree->Branch(ntuple_bdt_exc_name.c_str(), &bdt_exc);
 
 	for(i = 0; i < training_vars.size(); i++)
 	{
@@ -1324,17 +1420,30 @@ int PNP_Ana::DoBackgroundCopy()
 		bkgrnd_tree->SetBranchAddress(training_vars[i].c_str(), &(tvars[i]));
 		output_tree->Branch(training_vars[i].c_str(), &(tvars[i]));
 
-		reader->AddVariable(training_vars[i].c_str(), &(tvars[i]));
+		reader_inc->AddVariable(training_vars[i].c_str(), &(tvars[i]));
+		reader_exc->AddVariable(training_vars[i].c_str(), &(tvars[i]));
 	}
 
-	if(training_weight_file_dir == "")
+	if(training_dir == "")
 	{
-		output_str << "\tMember \"training_weight_file_dir\" not set" << std::endl;
+		output_str << "\tMember \"training_dir\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(training_inc_subdir == "")
+	{
+		output_str << "\tMember \"training_inc_prefix\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	if(training_exc_subdir == "")
+	{
+		output_str << "\tMember \"training_exc_prefix\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
 
-	s = training_weight_file_dir + "dataloader/weights/factory_BDT.weights.xml";
+	s = training_dir + training_inc_subdir;
 	if(!std::filesystem::exists(s.c_str()))
 	{
 		output_str << "\tCould not load weights file:" << std::endl;
@@ -1342,8 +1451,17 @@ int PNP_Ana::DoBackgroundCopy()
 		return_val = 1;
 		goto label;
 	}
+	reader_inc->BookMVA("BDT", s.c_str());
 
-	reader->BookMVA("BDT", s.c_str());
+	s = training_dir + training_exc_subdir;
+	if(!std::filesystem::exists(s.c_str()))
+	{
+		output_str << "\tCould not load weights file:" << std::endl;
+		output_str << "\t" << s << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	reader_exc->BookMVA("BDT", s.c_str());
 
 	for(i = 0; i < cut_exprs.size(); i++)
 	{
@@ -1361,27 +1479,20 @@ int PNP_Ana::DoBackgroundCopy()
 		for(i = 0; i < cut_vars.size(); i++)
 		{
 			((RooRealVar*)&(cargs[i]))->setVal(cvars[i]);
-			if(n < 50)
-			{
-				std::cout << ((RooRealVar*)&(cargs[i]))->GetName() << ":\t" << ((RooRealVar*)&(cargs[i]))->getVal() << "\t" << cvars[i] << std::endl;
-			}
 		}
-		if(n < 50)std::cout << std::endl;
-
 		b = false;
-
 		for(i = 0; i < cut_exprs.size(); i++)
 		{
 			if(((RooFormulaVar*)&(cexprs[i]))->evaluate() == 0.0)
 			{
 				b = true;
 			}
-
 		}
 
 		if(b)continue;
 
-		bdtv = reader->EvaluateMVA("BDT");
+		bdt_inc = reader_inc->EvaluateMVA("BDT");
+		bdt_exc = reader_exc->EvaluateMVA("BDT");
 		output_tree->Fill();
 	}
 
@@ -1393,7 +1504,8 @@ int PNP_Ana::DoBackgroundCopy()
 		output_file->Write();
 		output_file->Close();
 	}
-	if(reader)delete reader;
+	if(reader_inc)delete reader_inc;
+	if(reader_exc)delete reader_exc;
 
 	return return_val;
 }
@@ -1415,7 +1527,7 @@ int PNP_Ana::DoBackgroundFit()
 	TTree* bkgrnd_tree = nullptr;
 
 	RooRealVar* mass = nullptr;
-	RooRealVar* bdtv = nullptr;
+	RooRealVar* bdt_inc = nullptr;
 	RooRealVar* mean = nullptr;
 	RooRealVar* wdth = nullptr;
 	RooRealVar* sgnl_count = nullptr;
@@ -1455,9 +1567,9 @@ int PNP_Ana::DoBackgroundFit()
 		return_val = 1;
 		goto label;
 	}
-	if(ntuple_bdtv_name == "")
+	if(ntuple_bdt_inc_name == "")
 	{
-		output_str << "\tMember 'ntuple_bdtv_name' is empty string" << std::endl;
+		output_str << "\tMember 'ntuple_bdt_inc_name' is empty string" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -1520,7 +1632,7 @@ int PNP_Ana::DoBackgroundFit()
 	std::getline(mass_fit_file, s);
 	sscanf(s.c_str(), "%*s %f", &a);
 	mass = new RooRealVar(ntuple_mass_name.c_str(), ntuple_mass_name.c_str(), mass_min, mass_max);
-	bdtv = new RooRealVar(ntuple_bdtv_name.c_str(), ntuple_bdtv_name.c_str(), -FLT_MAX, FLT_MAX);
+	bdt_inc = new RooRealVar(ntuple_bdt_inc_name.c_str(), ntuple_bdt_inc_name.c_str(), -FLT_MAX, FLT_MAX);
 	wdth = new RooRealVar("w", "w", 1.0, 1.0 / num_sigma, num_sigma);
 	mean = new RooRealVar("mu", "mu", a, a, a);
 	i = 0;
@@ -1570,7 +1682,7 @@ int PNP_Ana::DoBackgroundFit()
 	model = new RooAddPdf("model", "model", sgnl_bkgd, count);
 
 	cvars.addOwned(*mass);
-	cvars.addOwned(*bdtv);
+	cvars.addOwned(*bdt_inc);
 	for(i = 0; i < cut_vars.size(); i++)
 	{
 		cvars.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), 0.0, -FLT_MAX, FLT_MAX)));
@@ -1578,7 +1690,7 @@ int PNP_Ana::DoBackgroundFit()
 
 	s = "";
 	s += "(";
-	s += ntuple_bdtv_name;
+	s += ntuple_bdt_inc_name;
 	s += ">";
 	s += std::to_string(bdt_cut);
 	s += ")";
