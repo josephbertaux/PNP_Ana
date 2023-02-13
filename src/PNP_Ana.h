@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 #include <string>
+#include <cctype>
+#include <algorithm>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -47,13 +49,18 @@ protected:
 	std::string mc_mass_fit_base_name = "";
 
 	std::string training_dir = "";
-	std::string training_inc_subdir = "";
-	std::string training_exc_subdir = "";
+	std::string inc_factory_name = "";
+	std::string exc_factory_name = "";
+	std::string inc_training_weights = "";
+	std::string exc_training_weights = "";
 
 	std::string data_mass_fit_root_file_name = "";	//possibly vestegial
 	std::string data_mass_fit_text_file_name = "";
 	std::string data_mass_fit_plot_file_name = "";
 	std::string data_mass_fit_base_name = "";
+
+	std::string efficiency_plot_file_name = "";
+	std::string efficiency_text_file_name = "";
 
 	int plot_bins = -1;
 
@@ -69,6 +76,8 @@ protected:
 	float mass_min = -1.0;
 	float mass_max = -1.0;
 
+	std::string inc_training_file_name = "";
+	std::string exc_training_file_name = "";
 	std::string traind_file_name = "";
 	std::string traind_ntpl_name = "";
 	std::string bdt_inc_name = "";
@@ -102,6 +111,7 @@ public:
 	int DoExclusiveTraining();
 	int ApplyTraining();
 	int DoBackgroundFit();
+	int GetOptimalCut();
 };
 
 #endif

@@ -1,63 +1,61 @@
 line 1:
 	SetUserName jbertau
 line 2:
-	SetExecName /home/jbertau/Data/Repositories/PNP_Ana/exe/1_mc_mass_fits.exe
+	SetExecName /home/jbertau/Data/Repositories/PNP_Ana/exe/6_get_efficiencies.exe
 line 3:
-	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/mc_mass_fits
+	SetOutputDir /scratch/brown/jbertau/BD0_Ana_Fall_2022/efficiency
 line 4:
 	SetMaxJobs 2000
 line 5:
 	SetSubTimer 120
 line 7:
-	AddCommandLineArg d out
-line 8:
 	AddCommandLineArg d txt
-line 9:
+line 8:
 	AddCommandLineArg d plt
-line 11:
+line 10:
 	AddCommandLineArg i 8
-line 12:
+line 11:
 	AddCommandLineArg i 5
-Submitted batch job 18533668
-Submitted batch job 18533669
-Submitted batch job 18533670
-Submitted batch job 18533671
-Submitted batch job 18533672
-Submitted batch job 18533673
-Submitted batch job 18533674
-Submitted batch job 18533675
-Submitted batch job 18533676
-Submitted batch job 18533677
-Submitted batch job 18533678
-Submitted batch job 18533679
-Submitted batch job 18533680
-Submitted batch job 18533681
-Submitted batch job 18533682
-Submitted batch job 18533683
-Submitted batch job 18533684
-Submitted batch job 18533685
-Submitted batch job 18533686
-Submitted batch job 18533687
-Submitted batch job 18533688
-Submitted batch job 18533689
-Submitted batch job 18533690
-Submitted batch job 18533691
-Submitted batch job 18533692
-Submitted batch job 18533693
-Submitted batch job 18533694
-Submitted batch job 18533695
-Submitted batch job 18533696
-Submitted batch job 18533697
-Submitted batch job 18533698
-Submitted batch job 18533699
-Submitted batch job 18533700
-Submitted batch job 18533701
-Submitted batch job 18533702
-Submitted batch job 18533703
-Submitted batch job 18533704
-Submitted batch job 18533705
-Submitted batch job 18533706
-Submitted batch job 18533707
-Thu Feb  9 18:26:49 2023
+Submitted batch job 18567103
+Submitted batch job 18567104
+Submitted batch job 18567105
+Submitted batch job 18567106
+Submitted batch job 18567107
+Submitted batch job 18567108
+Submitted batch job 18567109
+Submitted batch job 18567110
+Submitted batch job 18567111
+Submitted batch job 18567112
+Submitted batch job 18567113
+Submitted batch job 18567114
+Submitted batch job 18567115
+Submitted batch job 18567116
+Submitted batch job 18567117
+Submitted batch job 18567118
+Submitted batch job 18567119
+Submitted batch job 18567120
+Submitted batch job 18567121
+Submitted batch job 18567122
+Submitted batch job 18567123
+Submitted batch job 18567124
+Submitted batch job 18567125
+Submitted batch job 18567126
+Submitted batch job 18567127
+Submitted batch job 18567128
+Submitted batch job 18567129
+Submitted batch job 18567130
+Submitted batch job 18567131
+Submitted batch job 18567132
+Submitted batch job 18567133
+Submitted batch job 18567134
+Submitted batch job 18567135
+Submitted batch job 18567136
+Submitted batch job 18567137
+Submitted batch job 18567138
+Submitted batch job 18567139
+Submitted batch job 18567140
+Submitted batch job 18567141
+Submitted batch job 18567142
+Mon Feb 13 15:54:30 2023
 Submitted batch of 40 jobs (40 total)
 Done

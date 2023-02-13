@@ -474,42 +474,23 @@ int PNP_Ana::DoInclusiveTraining()
 
 	std::ifstream mass_fit_file;
 
-	//if(output_file_name == "")
-	//{
-	//	output_str << "\tMember \"output_file_name\" not set" << std::endl;
-	//	return_val = 1;
-	//	goto label;
-	//}
-	//return_val = TouchOutput(output_file_name.c_str(), output_file);
-	//if(return_val)goto label;
+	if(inc_training_file_name == "")
+	{
+		output_str << "\tMember \"inc_training_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	return_val = TouchOutput(inc_training_file_name.c_str(), output_file);
+	if(return_val)goto label;
 
-	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
+	if(inc_factory_name == "")
+	{
+		output_str << "\tMember \"inc_factory_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	factory = new TMVA::Factory(inc_factory_name, output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
-
-	if(training_dir == "")
-	{
-		output_str << "\tMember \"training_dir\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	if(training_inc_subdir == "")
-	{
-		output_str << "\tMember \"training_inc_subdir\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	s = training_dir + training_inc_subdir;
-	if(!std::filesystem::exists(s.c_str()))
-	{
-		if(!std::filesystem::create_directories(training_dir.c_str()))
-		{
-			output_str << "\tFailed to find or create dir:" << std::endl;
-			output_str << "\t" << s << std::endl;
-			return_val = 1;
-			goto label;
-		}
-	}
-	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_inc_subdir.c_str();
 
 	if(mc_mass_fit_text_file_name == "")
 	{
@@ -638,46 +619,27 @@ int PNP_Ana::DoExclusiveTraining()
 
 	std::ifstream mass_fit_file;
 
-	//if(output_file_name == "")
-	//{
-	//	output_str << "\tMember \"output_file_name\" not set" << std::endl;
-	//	return_val = 1;
-	//	goto label;
-	//}
-	//return_val = TouchOutput(output_file_name.c_str(), output_file);
-	//if(return_val)goto label;
+	if(exc_training_file_name == "")
+	{
+		output_str << "\tMember \"exc_traing_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	return_val = TouchOutput(exc_training_file_name.c_str(), output_file);
+	if(return_val)goto label;
 
-	factory = new TMVA::Factory("factory", output_file, "!V:!Silent:AnalysisType=Classification");
+	if(exc_factory_name == "")
+	{
+		output_str << "\tMember \"exc_factory_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	factory = new TMVA::Factory(exc_factory_name, output_file, "!V:!Silent:AnalysisType=Classification");
 	dataloader = new TMVA::DataLoader("dataloader");
-
-	if(training_dir == "")
-	{
-		output_str << "\tMember \"training_dir\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	if(training_exc_subdir == "")
-	{
-		output_str << "\tMember \"training_exc_subdir\" not set" << std::endl;
-		return_val = 1;
-		goto label;
-	}
-	s = training_dir + training_exc_subdir;
-	if(!std::filesystem::exists(s.c_str()))
-	{
-		if(!std::filesystem::create_directories(training_dir.c_str()))
-		{
-			output_str << "\tFailed to find or create dir:" << std::endl;
-			output_str << "\t" << s << std::endl;
-			return_val = 1;
-			goto label;
-		}
-	}
-	(TMVA::gConfig().GetIONames()).fWeightFileDirPrefix = training_exc_subdir.c_str();
 
 	if(mc_mass_fit_text_file_name == "")
 	{
-		output_str << "\tMember \"mc_mass_fit_file_name\" not set" << std::endl;
+		output_str << "\tMember \"mc_mass_fit_text_file_name\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
@@ -856,8 +818,6 @@ int PNP_Ana::ApplyTraining()
 		bkgrnd_tree->SetBranchAddress(cut_vars[i].c_str(), &(cvars[i]));
 		output_tree->Branch(cut_vars[i].c_str(), &(cvars[i]));
 
-		std::cout << &(cvars[i]) << std::endl;
-
 		cargs.addOwned(*(new RooRealVar(cut_vars[i].c_str(), cut_vars[i].c_str(), -FLT_MAX, FLT_MAX)));
 	}
 
@@ -900,20 +860,21 @@ int PNP_Ana::ApplyTraining()
 		return_val = 1;
 		goto label;
 	}
-	if(training_inc_subdir == "")
+	if(inc_training_weights == "")
 	{
 		output_str << "\tMember \"training_inc_prefix\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
-	if(training_exc_subdir == "")
+	if(exc_training_weights == "")
 	{
 		output_str << "\tMember \"training_exc_prefix\" not set" << std::endl;
 		return_val = 1;
 		goto label;
 	}
 
-	s = training_dir + training_inc_subdir;
+	s = training_dir + inc_training_weights;
+	//s = inc_training_weights;
 	if(!std::filesystem::exists(s.c_str()))
 	{
 		output_str << "\tCould not load weights file:" << std::endl;
@@ -923,7 +884,8 @@ int PNP_Ana::ApplyTraining()
 	}
 	reader_inc->BookMVA("BDT", s.c_str());
 
-	s = training_dir + training_exc_subdir;
+	s = training_dir + exc_training_weights;
+	//s = exc_training_weights;
 	if(!std::filesystem::exists(s.c_str()))
 	{
 		output_str << "\tCould not load weights file:" << std::endl;
@@ -939,8 +901,6 @@ int PNP_Ana::ApplyTraining()
 		s += std::to_string(i);
 		cexprs.addOwned(*(new RooFormulaVar(s.c_str(), s.c_str(), cut_exprs[i].c_str(), cargs)));
 	}
-
-	bkgrnd_tree->Print();
 
 	for(n = 0; n < bkgrnd_tree->GetEntriesFast(); n++)
 	{
@@ -1256,5 +1216,84 @@ int PNP_Ana::DoBackgroundFit()
 	if(plot)delete plot;
 	if(cnvs)delete cnvs;
 
+	return return_val;
+}
+
+int PNP_Ana::GetOptimalCut()
+{
+	int return_val = 0;
+	std::stringstream output_str;
+	output_str << "PNP_Ana::GetOptimalCut():" << std::endl;
+
+	int i = 0;
+	Long64_t n;
+	char bffr[1048];
+	float x;
+	float y;
+	std::string s = "";
+	std::map<float, float> cut_efficiencies;
+	std::map<float, float>::const_iterator itr;
+
+	FILE* pipe = nullptr;
+	std::ifstream file;
+
+	TCanvas* cnvs = nullptr;
+	TGraph* g = nullptr;
+
+	if(data_mass_fit_text_file_name == "")
+	{
+		output_str << "\tMember \"data_mass_fit_text_file_name\" is not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	s = "ls " + data_mass_fit_text_file_name;
+	pipe = popen(s.c_str(), "r");
+	if(!pipe)
+	{
+		output_str << "\tPipe is not open" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	while(fgets(bffr, sizeof(bffr), pipe) != NULL)
+	{
+		s = bffr;
+		s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
+		file.open(s, std::ifstream::in);
+		if(!file.is_open())
+		{
+			std::cout << "\tCouldn't open file:" << std::endl;
+			std::cout << "\t\t" << s << "foo"<< std::endl;
+			continue;
+		}
+
+		std::getline(file, s);
+		file.close();
+
+		std::sscanf(s.c_str(), "%*s %f %*s %*f %*s %f", &x, &y);
+		cut_efficiencies[x] = y;
+	}
+
+	cnvs = new TCanvas("cnvs", "cnvs");
+	cnvs->cd();
+	g = new TGraph();
+	for(itr = cut_efficiencies.begin(); itr != cut_efficiencies.end(); ++itr)
+	{
+		std::cout << itr->first << ":\t" << itr->second << std::endl;
+		g->AddPoint(itr->first, itr->second);
+	}
+	if(efficiency_plot_file_name == "")
+	{
+		output_str << "\tMember \"efficiency_plot_file_name\" not set" << std::endl;
+		return_val = 1;
+		goto label;
+	}
+	g->Draw();
+	cnvs->SaveAs(efficiency_plot_file_name.c_str());
+
+	label:
+	output_str << std::ends;
+	if(return_val)std::cout << output_str.str();
+	if(cnvs)delete cnvs;
+	if(g)delete g;
 	return return_val;
 }

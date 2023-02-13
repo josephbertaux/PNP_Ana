@@ -5,19 +5,20 @@ int const PNP_Config::bdt_num_cuts =				40;
 
 std::string const PNP_Config::root_dir =			"/scratch/brown/jbertau/BD0_Ana_Fall_2022/";
 
-std::string const PNP_Config::mc_mass_fit_root_subdir =		"mc_mass_fits/out/fit_ntpl";
+std::string const PNP_Config::mc_mass_fit_root_subdir =		"mc_mass_fits/idk/fit_ntpl";
 std::string const PNP_Config::mc_mass_fit_text_subdir =		"mc_mass_fits/txt/fit_prms";
 std::string const PNP_Config::mc_mass_fit_plot_subdir =		"mc_mass_fits/plt/fit_plot";
 std::string const PNP_Config::mc_mass_fit_base_name =		"mc_mass_fit";
 
-std::string const PNP_Config::training_dir =			"dataset/weights/";
-std::string const PNP_Config::training_inc_subdir =		"inc/";
-std::string const PNP_Config::training_exc_subdir =		"exc/";
+std::string const PNP_Config::training_dir =			"/home/jbertau/Data/Repositories/PNP_Ana/sub/";
 
-std::string const PNP_Config::data_mass_fit_root_subdir =	"data_mass_fits/out/fit_ntpl";
+std::string const PNP_Config::data_mass_fit_root_subdir =	"data_mass_fits/idk/fit_ntpl";
 std::string const PNP_Config::data_mass_fit_text_subdir =	"data_mass_fits/txt/fit_prms";
 std::string const PNP_Config::data_mass_fit_plot_subdir =	"data_mass_fits/plt/fit_plot";
 std::string const PNP_Config::data_mass_fit_base_name =		"data_mass_fit";
+
+std::string const PNP_Config::efficiency_text_subdir =		"efficiency/txt/optimal_val";
+std::string const PNP_Config::efficiency_plot_subdir =		"efficiency/plt/efficieny_curve";
 
 int const PNP_Config::plot_bins =				50;
 
@@ -33,6 +34,8 @@ std::string const PNP_Config::ntuple_mass_name =		"mass";
 float const PNP_Config::mass_min =				1.75;
 float const PNP_Config::mass_max =				1.95;
 
+std::string const PNP_Config::inc_training_subdir =		"inc_training/metadata";
+std::string const PNP_Config::exc_training_subdir =		"exc_training/metadata";
 std::string const PNP_Config::traind_ntpl_subdir =		"traind/bdt_ntpl";
 std::string const PNP_Config::traind_ntpl_name =		"traind_ntpl";
 std::string const PNP_Config::bdt_inc_name =			"bdt_inc";
@@ -93,7 +96,7 @@ PNP_Ana* PNP_Config::Config(int args, int argc, char* argv[])
 	int arg[3] = {0, 0, bdt_num_cuts / 2};
 	std::string s = "";
 
-	for(i = 0; i < 2; ++i)
+	for(i = 0; i < 3; ++i)
 	{
 		if(argc > args + i)
 		{
@@ -118,23 +121,39 @@ PNP_Ana* PNP_Config::Config(int args, int argc, char* argv[])
 	if(!s.empty())
 	{
 		pnp_ana->mc_mass_fit_root_file_name = root_dir + mc_mass_fit_root_subdir + s + ".root";
-		pnp_ana->mc_mass_fit_root_file_name = root_dir + mc_mass_fit_text_subdir + s + ".txt";
-		pnp_ana->mc_mass_fit_root_file_name = root_dir + mc_mass_fit_plot_subdir + s + ".png";
+		pnp_ana->mc_mass_fit_text_file_name = root_dir + mc_mass_fit_text_subdir + s + ".txt";
+		pnp_ana->mc_mass_fit_plot_file_name = root_dir + mc_mass_fit_plot_subdir + s + ".png";
 		pnp_ana->mc_mass_fit_base_name = mc_mass_fit_base_name + s;
 	}
 
 	pnp_ana->training_dir = training_dir;
-	pnp_ana->training_inc_subdir = training_inc_subdir;
-	pnp_ana->training_exc_subdir = training_exc_subdir;
+
+	pnp_ana->inc_factory_name = "factory_inc" + s;
+	pnp_ana->exc_factory_name = "factory_exc" + s;
+
+	pnp_ana->inc_training_weights = "dataloader/weights/" + pnp_ana->inc_factory_name + "_BDT.weights.xml";
+	pnp_ana->exc_training_weights = "dataloader/weights/" + pnp_ana->exc_factory_name + "_BDT.weights.xml";
 
 	s = bdtSuffix(args, argc, argv);
 	if(!s.empty())
 	{
 		pnp_ana->data_mass_fit_root_file_name = root_dir + data_mass_fit_root_subdir + s + ".root";
-		pnp_ana->data_mass_fit_root_file_name = root_dir + data_mass_fit_text_subdir + s + ".txt";
-		pnp_ana->data_mass_fit_root_file_name = root_dir + data_mass_fit_plot_subdir + s + ".png";
+		pnp_ana->data_mass_fit_text_file_name = root_dir + data_mass_fit_text_subdir + s + ".txt";
+		pnp_ana->data_mass_fit_plot_file_name = root_dir + data_mass_fit_plot_subdir + s + ".png";
 		pnp_ana->data_mass_fit_base_name = data_mass_fit_base_name + s;
 	}
+	else
+	{
+		s = pTcentSuffix(args, argc, argv);
+		if(!s.empty())
+		{
+			pnp_ana->data_mass_fit_text_file_name = root_dir + data_mass_fit_text_subdir + s + "_*.txt";
+		}
+	}
+
+	s = pTcentSuffix(args, argc, argv);
+	pnp_ana->efficiency_plot_file_name = root_dir + efficiency_plot_subdir + s + ".png";
+	pnp_ana->efficiency_text_file_name = root_dir + efficiency_text_subdir + s + ".txt";
 
 	pnp_ana->plot_bins = plot_bins;
 
@@ -153,7 +172,9 @@ PNP_Ana* PNP_Config::Config(int args, int argc, char* argv[])
 	s = pTcentSuffix(args, argc, argv);
 	if(!s.empty())
 	{
-		pnp_ana->traind_file_name = traind_ntpl_subdir + s + ".root";
+		pnp_ana->inc_training_file_name = root_dir + inc_training_subdir + s + ".root";
+		pnp_ana->exc_training_file_name = root_dir + exc_training_subdir + s + ".root";
+		pnp_ana->traind_file_name = root_dir + traind_ntpl_subdir + s + ".root";
 	}
 	pnp_ana->traind_ntpl_name = traind_ntpl_name;
 	pnp_ana->bdt_inc_name = bdt_inc_name;

@@ -4,7 +4,7 @@ SetOutputDir{/scratch/brown/jbertau/BD0_Ana_Fall_2022/data_mass_fits}
 SetMaxJobs{2000}
 SetSubTimer{120}
 
-AddCommandLineArg{d; out} //useless root files
+AddCommandLineArg{d; idk} //useless root files
 AddCommandLineArg{d; txt}
 AddCommandLineArg{d; plt}
 

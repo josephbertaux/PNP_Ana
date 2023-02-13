@@ -17,14 +17,15 @@ protected:
 	std::string static const mc_mass_fit_plot_subdir;	//path to mc mass fit .png files, including the first part of the filename, relative to root_dir
 	std::string static const mc_mass_fit_base_name;		//the base name of the plot and filtered ntuple
 
-	std::string static const training_dir;			//path to training metadata relative to the directory where jobs are submitted
-	std::string static const training_inc_subdir;		//ROOT is going to give us more control over training metadata soon
-	std::string static const training_exc_subdir;		//however these will showup where they will and we just have to cope
+	std::string static const training_dir;			//path to training metadata, just gotta cope
 
 	std::string static const data_mass_fit_root_subdir;	//directory for data mass fit by bdt value .root files, relative to root_dir
 	std::string static const data_mass_fit_text_subdir;	//directory for data mass fit by bdt value .txt files, relative to root_dir
 	std::string static const data_mass_fit_plot_subdir;	//directory for data mass fit by bdt value .png files, relative to root_dir
 	std::string static const data_mass_fit_base_name;	//the base name of the plot and filtered ntuple
+
+	std::string static const efficiency_text_subdir;
+	std::string static const efficiency_plot_subdir;
 
 	int const static plot_bins;
 
@@ -40,6 +41,8 @@ protected:
 	float static const mass_min;
 	float static const mass_max;
 
+	std::string static const inc_training_subdir;		//path to root files containing objects used for inclusive training
+	std::string static const exc_training_subdir;		//path to root files containing objects used for exclusive training
 	std::string static const traind_ntpl_subdir;		//path to root files containing copied data with branches that show the BDT values
 	std::string static const traind_ntpl_name;		//name for filtered ntuples on data which include the BDT values 
 	std::string static const bdt_inc_name;			//branch for the bdt values of inclusive training
